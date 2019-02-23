@@ -1,7 +1,7 @@
 # Личный проект «Большое путешествие» [![Build status][travis-image]][travis-url]
 
 * Студент: [Kristina SHkatulova](https://up.htmlacademy.ru/ecmascript/8/user/603197).
-* Наставник: `Неизвестно`.
+* Наставник: `Юрий Татаринцев`.
 
 ---
 
