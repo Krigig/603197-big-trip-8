@@ -1,5 +1,7 @@
+import getData from './getData.js';
 import makeFilter from './make-filter.js';
 import makeTripPoint from './make-trip-point.js';
+
 
 const filters = document.querySelector(`.trip-filter`);
 
@@ -8,10 +10,10 @@ filters.insertAdjacentHTML(`beforeend`, makeFilter(`Future`));
 filters.insertAdjacentHTML(`beforeend`, makeFilter(`Past`));
 
 const renderTripPoint = (amount, dist) => {
-  const tasks = new Array(amount)
+  const points = new Array(amount)
     .fill()
-    .map(makeTripPoint);
-  dist.insertAdjacentHTML(`beforeend`, tasks.join(``));
+    .map(() => makeTripPoint(getData()));
+  dist.insertAdjacentHTML(`beforeend`, points.join(``));
 };
 
 const tripPointsContainer = document.querySelector(`.trip-day__items`);
