@@ -1,4 +1,4 @@
-import {getRamdomArray, random} from './utils.js';
+import {getRamdomArray, random, getRandomData} from './utils.js';
 
 export default () => {
   const icons = {
@@ -38,7 +38,6 @@ export default () => {
       `Nunc fermentum tortor ac porta dapibus.`,
       `In rutrum ac purus sit amet tempus.`], 3),
     price: Math.floor(Math.random() * 1000),
-    dayNumber: random(1, 30),
-    dayTitle: `Mar 18`,
+    date: getRandomData(`01.03.2018`, `01.12.2018`),
   };
 };

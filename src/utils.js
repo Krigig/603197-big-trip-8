@@ -14,4 +14,17 @@ const getShuffledArray = (arr) => {
 
 const random = (min, max) => Math.floor(Math.random() * (max - min) + min);
 
-export {getRamdomArray, random};
+const parseDate = (date) => {
+  const day = date.split(`.`)[0];
+  const month = +date.split(`.`)[1] - 1;
+  const year = date.split(`.`)[2];
+  return new Date(year, month, day);
+};
+
+const getRandomData = (minDate, maxDate) => {
+  const minParseDate = parseDate(minDate);
+  const maxParseDate = parseDate(maxDate);
+  return new Date(random(minParseDate.getTime(), maxParseDate.getTime()));
+};
+
+export {getRamdomArray, random, getRandomData};
