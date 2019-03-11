@@ -27,4 +27,10 @@ const getRandomData = (minDate, maxDate) => {
   return new Date(random(minParseDate.getTime(), maxParseDate.getTime()));
 };
 
-export {getRamdomArray, random, getRandomData};
+const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+  return newElement.firstChild;
+};
+
+export {getRamdomArray, random, getRandomData, createElement};

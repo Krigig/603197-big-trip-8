@@ -21,11 +21,19 @@ export default () => {
     city: [`Amsterdam`, `Geneva`, `Chamonix`][Math.floor(Math.random() * 3)],
     picture: `http://picsum.photos/300/150?r=${Math.random()}`,
     offers: getRamdomArray([...new Set([
-      `Add luggage +&euro;&nbsp;${random(1, 340)}`,
-      `Switch to comfort class +&euro;&nbsp;${random(1, 230)}`,
-      `Add meal +&euro;&nbsp;${random(1, 330)}`,
-      `Choose seats +&euro;&nbsp;${random(1, 430)}`,
-    ])], 2),
+      {text: `Add luggage +&euro;&nbsp;${random(1, 340)}`,
+        id: `add-luggage`
+      },
+      {text: `Switch to comfort class +&euro;&nbsp;${random(1, 230)}`,
+        id: `switch-to-comfort-class`
+      },
+      {text: `Add meal +&euro;&nbsp;${random(1, 330)}`,
+        id: `add-meal`
+      },
+      {text: `Choose seats +&euro;&nbsp;${random(1, 430)}`,
+        id: `choose-seats`
+      },
+    ])], 3),
     description: getRamdomArray([
       `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
       `Cras aliquet varius magna, non porta ligula feugiat eget.`,

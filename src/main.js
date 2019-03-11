@@ -1,6 +1,7 @@
 import makeFilter from './make-filter.js';
-import {renderTripPoint, removeTripPoint} from './make-trip-point.js';
-
+import getData from './getData.js';
+import {Point} from './point.js';
+import {PointEdit} from './point-edit.js';
 
 const filters = document.querySelector(`.trip-filter`);
 
@@ -9,13 +10,26 @@ filters.insertAdjacentHTML(`beforeend`, makeFilter(`Future`));
 filters.insertAdjacentHTML(`beforeend`, makeFilter(`Past`));
 
 const tripPointsContainer = document.querySelector(`.trip-day__items`);
-renderTripPoint(7, tripPointsContainer);
+const pointData = getData();
+const firstPoint = new Point(pointData);
+const pointEditComponent = new PointEdit(pointData);
 
-const filtersArray = filters.querySelectorAll(`input`);
-filtersArray.forEach(function (element) {
-  element.addEventListener(`click`, function () {
-    removeTripPoint();
-    let amountTripPoins = Math.round(Math.random() * 10);
-    renderTripPoint(amountTripPoins, tripPointsContainer);
-  });
-});
+tripPointsContainer.appendChild(firstPoint.render());
+firstPoint.onEdit = () => {
+  pointEditComponent.render();
+  tripPointsContainer.replaceChild(pointEditComponent.element, firstPoint.element);
+  firstPoint.unrender();
+};
+
+pointEditComponent.onSubmit = () => {
+  firstPoint.render();
+  tripPointsContainer.replaceChild(firstPoint.element, pointEditComponent.element);
+  pointEditComponent.unrender();
+};
+
+pointEditComponent.onReset = () => {
+  firstPoint.render();
+  tripPointsContainer.replaceChild(firstPoint.element, pointEditComponent.element);
+  pointEditComponent.unrender();
+};
+
