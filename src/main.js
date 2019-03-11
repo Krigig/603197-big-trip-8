@@ -27,3 +27,9 @@ pointEditComponent.onSubmit = () => {
   pointEditComponent.unrender();
 };
 
+pointEditComponent.onReset = () => {
+  firstPoint.render();
+  tripPointsContainer.replaceChild(firstPoint.element, pointEditComponent.element);
+  pointEditComponent.unrender();
+};
+

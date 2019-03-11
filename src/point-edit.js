@@ -13,6 +13,7 @@ export class PointEdit {
 
     this._element = null;
     this._onSubmit = null;
+    this._onReset = null;
 
   }
 
@@ -21,8 +22,16 @@ export class PointEdit {
     return typeof this._onSubmit === `function` && this._onSubmit();
   }
 
+  _onResetButtonClick() {
+    return typeof this._onReset === `function` && this._onReset();
+  }
+
   set onSubmit(fn) {
     this._onSubmit = fn;
+  }
+
+  set onReset(fn) {
+    this._onReset = fn;
   }
 
   get element() {
@@ -160,6 +169,8 @@ export class PointEdit {
   bind() {
     this._element.querySelector(`.point__form`)
         .addEventListener(`submit`, this._onSubmitButtonClick.bind(this));
+    this._element.querySelector(`.point__form`)
+        .addEventListener(`reset`, this._onResetButtonClick.bind(this));
   }
 
   unbind() {
