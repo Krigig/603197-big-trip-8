@@ -1,7 +1,7 @@
-import {createElement} from './utils.js';
-
-export class PointEdit {
+import {Component} from './component.js';
+export class PointEdit extends Component {
   constructor(data) {
+    super();
     this._type = data.type;
     this._icon = data.icon;
     this._city = data.city;
@@ -15,6 +15,8 @@ export class PointEdit {
     this._onSubmit = null;
     this._onReset = null;
 
+    this._onSubmitButtonClick = this._onSubmitButtonClick.bind(this);
+    this._onResetButtonClick = this._onResetButtonClick.bind(this);
   }
 
   _onSubmitButtonClick(evt) {
@@ -32,10 +34,6 @@ export class PointEdit {
 
   set onReset(fn) {
     this._onReset = fn;
-  }
-
-  get element() {
-    return this._element;
   }
 
   get template() {
@@ -155,26 +153,18 @@ export class PointEdit {
 </article>`.trim();
   }
 
-  render() {
-    this._element = createElement(this.template);
-    this.bind();
-    return this._element;
-  }
-
-  unrender() {
-    this.unbind();
-    this._element = null;
-  }
-
   bind() {
     this._element.querySelector(`.point__form`)
-        .addEventListener(`submit`, this._onSubmitButtonClick.bind(this));
+        .addEventListener(`submit`, this._onSubmitButtonClick);
     this._element.querySelector(`.point__form`)
-        .addEventListener(`reset`, this._onResetButtonClick.bind(this));
+        .addEventListener(`reset`, this._onResetButtonClick);
   }
 
   unbind() {
-    // Удаление обработчиков
+    this._element.querySelector(`.point__form`)
+        .removeEventListener(`submit`, this._onSubmitButtonClick);
+    this._element.querySelector(`.point__form`)
+        .removeEventListener(`reset`, this._onResetButtonClick);
   }
 
 }
