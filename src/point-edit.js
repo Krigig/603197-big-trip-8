@@ -1,7 +1,7 @@
-import {createElement} from './utils.js';
-
-export class PointEdit {
+import {Component} from './component.js';
+export class PointEdit extends Component {
   constructor(data) {
+    super();
     this._type = data.type;
     this._icon = data.icon;
     this._city = data.city;
@@ -10,11 +10,15 @@ export class PointEdit {
     this._description = data.description;
     this._price = data.price;
     this._date = data.date;
+    this._timeStart = data.timeStart;
+    this._timeEnd = data.timeEnd;
 
     this._element = null;
     this._onSubmit = null;
     this._onReset = null;
 
+    this._onSubmitButtonClick = this._onSubmitButtonClick.bind(this);
+    this._onResetButtonClick = this._onResetButtonClick.bind(this);
   }
 
   _onSubmitButtonClick(evt) {
@@ -32,10 +36,6 @@ export class PointEdit {
 
   set onReset(fn) {
     this._onReset = fn;
-  }
-
-  get element() {
-    return this._element;
   }
 
   get template() {
@@ -79,7 +79,7 @@ export class PointEdit {
       </div>
 
       <div class="point__destination-wrap">
-        <label class="point__destination-label" for="destination">Flight to</label>
+        <label class="point__destination-label" for="destination">${this._type}</label>
         <input class="point__destination-input" list="destination-select" id="destination" value="${this._city}" name="destination">
         <datalist id="destination-select">
           <option value="airport"></option>
@@ -91,7 +91,7 @@ export class PointEdit {
 
       <label class="point__time">
         choose time
-        <input class="point__input" type="text" value="00:00 — 00:00" name="time" placeholder="00:00 — 00:00">
+        <input class="point__input" type="text" value="${this._timeStart} — ${this._timeEnd}" name="time" placeholder="${this._timeStart} — ${this._timeEnd}">
       </label>
 
       <label class="point__price">
@@ -155,26 +155,18 @@ export class PointEdit {
 </article>`.trim();
   }
 
-  render() {
-    this._element = createElement(this.template);
-    this.bind();
-    return this._element;
-  }
-
-  unrender() {
-    this.unbind();
-    this._element = null;
-  }
-
   bind() {
     this._element.querySelector(`.point__form`)
-        .addEventListener(`submit`, this._onSubmitButtonClick.bind(this));
+        .addEventListener(`submit`, this._onSubmitButtonClick);
     this._element.querySelector(`.point__form`)
-        .addEventListener(`reset`, this._onResetButtonClick.bind(this));
+        .addEventListener(`reset`, this._onResetButtonClick);
   }
 
   unbind() {
-    // Удаление обработчиков
+    this._element.querySelector(`.point__form`)
+        .removeEventListener(`submit`, this._onSubmitButtonClick);
+    this._element.querySelector(`.point__form`)
+        .removeEventListener(`reset`, this._onResetButtonClick);
   }
 
 }

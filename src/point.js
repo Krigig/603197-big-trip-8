@@ -1,7 +1,7 @@
-import {createElement} from './utils.js';
-
-export class Point {
+import {Component} from './component.js';
+export class Point extends Component {
   constructor(data) {
+    super();
     this._type = data.type;
     this._icon = data.icon;
     this._city = data.city;
@@ -10,17 +10,17 @@ export class Point {
     this._description = data.description;
     this._price = data.price;
     this._date = data.date;
+    this._timeStart = data.timeStart;
+    this._timeEnd = data.timeEnd;
 
     this._element = null;
     this._onEdit = null;
+
+    this._onEditButtonClick = this._onEditButtonClick.bind(this);
   }
 
   _onEditButtonClick() {
     return typeof this._onEdit === `function` && this._onEdit();
-  }
-
-  get element() {
-    return this._element;
   }
 
   set onEdit(fn) {
@@ -33,7 +33,7 @@ export class Point {
       <i class="trip-icon">${this._icon}</i>
       <h3 class="trip-point__title">${this._type} to ${this._city}</h3>
       <p class="trip-point__schedule">
-        <span class="trip-point__timetable">10:00&nbsp;&mdash; 11:00</span>
+        <span class="trip-point__timetable">${this._timeStart}&nbsp;&mdash; ${this._timeEnd}</span>
         <span class="trip-point__duration">1h 30m</span>
       </p>
       <p class="trip-point__price">&euro;&nbsp;${this._price}</p>
@@ -43,30 +43,15 @@ export class Point {
     </article>`.trim();
   }
 
-  render() {
-    this._element = createElement(this.template);
-    this.bind();
-    return this._element;
-  }
-
   bind() {
     this._element
-        .addEventListener(`click`, this._onEditButtonClick.bind(this));
-  }
-
-  render() {
-    this._element = createElement(this.template);
-    this.bind();
-    return this._element;
+        .addEventListener(`click`, this._onEditButtonClick);
   }
 
   unbind() {
-    // Удаление обработчиков
+    this._element
+        .removeEvenetListener(`click`, this._onEditButtonClick);
   }
 
-  unrender() {
-    this.unbind();
-    this._element = null;
-  }
 }
 
