@@ -14,6 +14,10 @@ export default () => {
     restaurant: `🍴`
   };
   const type = Object.keys(icons)[Math.floor(Math.random() * 3)];
+  const timeStartHour = Math.floor(random(0, 24));
+  const timeStartMinute = Math.floor(random(0, 60));
+  const timeEndHour = Math.floor(random(0, 24));
+  const timeEndMinute = Math.floor(random(0, 60));
 
   return {
     type,
@@ -47,5 +51,7 @@ export default () => {
       `In rutrum ac purus sit amet tempus.`], 3),
     price: Math.floor(Math.random() * 1000),
     date: getRandomData(`01.03.2018`, `01.12.2018`),
+    timeStart: [timeStartHour < 10 ? `0` + timeStartHour.toString() : timeStartHour.toString()] + `:` + [timeStartMinute < 10 ? `0` + timeStartMinute : timeStartMinute],
+    timeEnd: [timeEndHour < 10 ? `0` + timeEndHour : timeEndHour] + `:` + [timeEndMinute < 10 ? `0` + timeEndMinute : timeEndMinute]
   };
 };

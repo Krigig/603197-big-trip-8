@@ -10,6 +10,8 @@ export class PointEdit extends Component {
     this._description = data.description;
     this._price = data.price;
     this._date = data.date;
+    this._timeStart = data.timeStart;
+    this._timeEnd = data.timeEnd;
 
     this._element = null;
     this._onSubmit = null;
@@ -77,7 +79,7 @@ export class PointEdit extends Component {
       </div>
 
       <div class="point__destination-wrap">
-        <label class="point__destination-label" for="destination">Flight to</label>
+        <label class="point__destination-label" for="destination">${this._type}</label>
         <input class="point__destination-input" list="destination-select" id="destination" value="${this._city}" name="destination">
         <datalist id="destination-select">
           <option value="airport"></option>
@@ -89,7 +91,7 @@ export class PointEdit extends Component {
 
       <label class="point__time">
         choose time
-        <input class="point__input" type="text" value="00:00 — 00:00" name="time" placeholder="00:00 — 00:00">
+        <input class="point__input" type="text" value="${this._timeStart} — ${this._timeEnd}" name="time" placeholder="${this._timeStart} — ${this._timeEnd}">
       </label>
 
       <label class="point__price">
