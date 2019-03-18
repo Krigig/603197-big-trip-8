@@ -172,6 +172,7 @@ export class PointEdit extends Component {
     this._offers = data.offers;
     this._price = data.price;
     this._time = data.time;
+    this._icon = this._travelWay.find((element) => element.name === this._type).icon;
   }
 
   static createMapper(target) {
