@@ -2,16 +2,18 @@ import {Component} from './component.js';
 export class PointEdit extends Component {
   constructor(data) {
     super();
+    this._travelWay = data.travelWay;
     this._type = data.type;
     this._icon = data.icon;
-    this._city = data.city;
+    this._destinations = data.destinations;
+    this._destination = data.destination;
     this._picture = data.picture;
+    this._offersList = data.offersList;
     this._offers = data.offers;
     this._description = data.description;
     this._price = data.price;
     this._date = data.date;
-    this._timeStart = data.timeStart;
-    this._timeEnd = data.timeEnd;
+    this._time = data.time;
 
     this._element = null;
     this._onSubmit = null;
@@ -21,9 +23,32 @@ export class PointEdit extends Component {
     this._onResetButtonClick = this._onResetButtonClick.bind(this);
   }
 
+  _processForm(formData) {
+    const entry = {
+      date: ``,
+      type: this._type,
+      price: ``,
+      destination: ``,
+      offers: [],
+      time: ``,
+      icon: ``
+    };
+    const pointEditMapper = PointEdit.createMapper(entry);
+    for (const pair of formData.entries()) {
+      const [property, value] = pair;
+      pointEditMapper[property] && pointEditMapper[property](value);
+    }
+    console.log(entry);
+    return entry;
+  }
+
   _onSubmitButtonClick(evt) {
     evt.preventDefault();
-    return typeof this._onSubmit === `function` && this._onSubmit();
+
+    const formData = new FormData(this._element.querySelector(`.point__form`));
+    const newData = this._processForm(formData);
+    this.update(newData);
+    return typeof this._onSubmit === `function` && this._onSubmit(newData);
   }
 
   _onResetButtonClick() {
@@ -55,33 +80,22 @@ export class PointEdit extends Component {
 
         <div class="travel-way__select">
           <div class="travel-way__select-group">
-            <input class="travel-way__select-input visually-hidden" type="radio" id="travel-way-taxi" name="travel-way" value="taxi">
-            <label class="travel-way__select-label" for="travel-way-taxi">🚕 taxi</label>
-
-            <input class="travel-way__select-input visually-hidden" type="radio" id="travel-way-bus" name="travel-way" value="bus">
-            <label class="travel-way__select-label" for="travel-way-bus">🚌 bus</label>
-
-            <input class="travel-way__select-input visually-hidden" type="radio" id="travel-way-train" name="travel-way" value="train">
-            <label class="travel-way__select-label" for="travel-way-train">🚂 train</label>
-
-            <input class="travel-way__select-input visually-hidden" type="radio" id="travel-way-flight" name="travel-way" value="train" checked>
-            <label class="travel-way__select-label" for="travel-way-flight">✈️ flight</label>
+          ${this._travelWay.map((it) => (`
+          <input class="travel-way__select-input visually-hidden" type="radio" id="travel-way-${it.name}" name="travel-way" value="${it.name}">
+          <label class="travel-way__select-label" for="travel-way-${it.name}">${it.icon} ${it.name}</label>`
+            .trim())).join(``)}
           </div>
 
-          <div class="travel-way__select-group">
-            <input class="travel-way__select-input visually-hidden" type="radio" id="travel-way-check-in" name="travel-way" value="check-in">
-            <label class="travel-way__select-label" for="travel-way-check-in">🏨 check-in</label>
-
-            <input class="travel-way__select-input visually-hidden" type="radio" id="travel-way-sightseeing" name="travel-way" value="sight-seeing">
-            <label class="travel-way__select-label" for="travel-way-sightseeing">🏛 sightseeing</label>
-          </div>
         </div>
       </div>
 
       <div class="point__destination-wrap">
         <label class="point__destination-label" for="destination">${this._type}</label>
-        <input class="point__destination-input" list="destination-select" id="destination" value="${this._city}" name="destination">
+        <input class="point__destination-input" list="destination-select" id="destination" value="${this._destination}" name="destination">
         <datalist id="destination-select">
+          ${this._destinations.map((it) => (`
+          <option value="${it}"></option>
+          `.trim())).join(``)}
           <option value="airport"></option>
           <option value="Geneva"></option>
           <option value="Chamonix"></option>
@@ -91,7 +105,7 @@ export class PointEdit extends Component {
 
       <label class="point__time">
         choose time
-        <input class="point__input" type="text" value="${this._timeStart} — ${this._timeEnd}" name="time" placeholder="${this._timeStart} — ${this._timeEnd}">
+        <input class="point__input" type="text" value="${this._time}" name="time" placeholder="${this._time}}">
       </label>
 
       <label class="point__price">
@@ -116,25 +130,12 @@ export class PointEdit extends Component {
         <h3 class="point__details-title">offers</h3>
 
         <div class="point__offers-wrap">
-          <input ${this._offers.reduce((acc, item) => acc || item.id === `add-luggage`, false) ? `checked` : ``} class="point__offers-input visually-hidden" type="checkbox" id="add-luggage" name="offer" value="add-luggage">
-          <label for="add-luggage" class="point__offers-label">
-            <span class="point__offer-service">Add luggage</span> + €<span class="point__offer-price">30</span>
+          ${this._offersList.map((it) => (`
+          <input ${this._offers.reduce((acc, item) => acc || item === it.id, false) ? `checked` : ``} class="point__offers-input visually-hidden" type="checkbox" id="${it.id}" name="offer" value="${it.id}">
+          <label for="${it.id}" class="point__offers-label">
+             <span class="point__offer-service">${it.text}</span> + €<span class="point__offer-price">${it.price}</span>
           </label>
-
-          <input ${this._offers.reduce((acc, item) => acc || item.id === `switch-to-comfort-class`, false) ? `checked` : ``} class="point__offers-input visually-hidden" type="checkbox" id="switch-to-comfort-class" name="offer" value="switch-to-comfort-class">
-          <label for="switch-to-comfort-class" class="point__offers-label">
-            <span class="point__offer-service">Switch to comfort class</span> + €<span class="point__offer-price">100</span>
-          </label>
-
-          <input ${this._offers.reduce((acc, item) => acc || item.id === `add-meal`, false) ? `checked` : ``} class="point__offers-input visually-hidden" type="checkbox" id="add-meal" name="offer" value="add-meal">
-          <label for="add-meal" class="point__offers-label">
-            <span class="point__offer-service">Add meal </span> + €<span class="point__offer-price">15</span>
-          </label>
-
-          <input ${this._offers.reduce((acc, item) => acc || item.id === `choose-seats`, false) ? `checked` : ``} class="point__offers-input visually-hidden" type="checkbox" id="choose-seats" name="offer" value="choose-seats">
-          <label for="choose-seats" class="point__offers-label">
-            <span class="point__offer-service">Choose seats</span> + €<span class="point__offer-price">5</span>
-          </label>
+          `.trim())).join(``)}
         </div>
 
       </section>
@@ -142,11 +143,7 @@ export class PointEdit extends Component {
         <h3 class="point__details-title">Destination</h3>
         <p class="point__destination-text">Geneva is a city in Switzerland that lies at the southern tip of expansive Lac Léman (Lake Geneva). Surrounded by the Alps and Jura mountains, the city has views of dramatic Mont Blanc.</p>
         <div class="point__destination-images">
-          <img src="http://picsum.photos/330/140?r=123" alt="picture from place" class="point__destination-image">
-          <img src="http://picsum.photos/300/200?r=1234" alt="picture from place" class="point__destination-image">
-          <img src="http://picsum.photos/300/100?r=12345" alt="picture from place" class="point__destination-image">
-          <img src="http://picsum.photos/200/300?r=123456" alt="picture from place" class="point__destination-image">
-          <img src="http://picsum.photos/100/300?r=1234567" alt="picture from place" class="point__destination-image">
+          <img src="${this._picture}" alt="picture from place" class="point__destination-image">
         </div>
       </section>
       <input type="hidden" class="point__total-price" name="total-price" value="">
@@ -169,4 +166,34 @@ export class PointEdit extends Component {
         .removeEventListener(`reset`, this._onResetButtonClick);
   }
 
+  update(data) {
+    this._type = data.type;
+    this._destination = data.destination;
+    this._offers = data.offers;
+    this._price = data.price;
+    this._time = data.time;
+  }
+
+  static createMapper(target) {
+    return {
+      'date': (value) => {
+        target.day = value;
+      },
+      'price': (value) => {
+        target.price = value;
+      },
+      'time': (value) => {
+        target.time = value;
+      },
+      'destination': (value) => {
+        target.destination = value;
+      },
+      'travel-way': (value) => {
+        target.type = value;
+      },
+      'offer': (value) => target.offers.push(value),
+    };
+  }
+
 }
+
