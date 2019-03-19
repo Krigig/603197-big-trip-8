@@ -25,7 +25,8 @@ pointEditComponent.onSubmit = (newObject) => {
   pointData.price = newObject.price;
   pointData.date = newObject.date;
   pointData.type = newObject.type;
-  pointData.time = newObject.time;
+  pointData.timeStart = newObject.timeStart;
+  pointData.timeEnd = newObject.timeEnd;
   pointData.destination = newObject.destination;
   pointData.offers = newObject.offers;
   pointData.icon = newObject.icon;

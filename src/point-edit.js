@@ -1,4 +1,7 @@
 import {Component} from './component.js';
+import flatpickr from 'flatpickr';
+
+
 export class PointEdit extends Component {
   constructor(data) {
     super();
@@ -13,7 +16,8 @@ export class PointEdit extends Component {
     this._description = data.description;
     this._price = data.price;
     this._date = data.date;
-    this._time = data.time;
+    this._timeStart = data.timeStart;
+    this._timeEnd = data.timeEnd;
 
     this._element = null;
     this._onSubmit = null;
@@ -21,6 +25,10 @@ export class PointEdit extends Component {
 
     this._onSubmitButtonClick = this._onSubmitButtonClick.bind(this);
     this._onResetButtonClick = this._onResetButtonClick.bind(this);
+
+    this._dateFlatpickr = null;
+    this._timeStartFlatpickr = null;
+    this._timeEndFlatpickr = null;
   }
 
   _processForm(formData) {
@@ -30,7 +38,8 @@ export class PointEdit extends Component {
       price: ``,
       destination: ``,
       offers: [],
-      time: ``,
+      timeStart: ``,
+      timeEnd: ``,
       icon: ``
     };
     const pointEditMapper = PointEdit.createMapper(entry);
@@ -103,10 +112,10 @@ export class PointEdit extends Component {
         </datalist>
       </div>
 
-      <label class="point__time">
-        choose time
-        <input class="point__input" type="text" value="${this._time}" name="time" placeholder="${this._time}}">
-      </label>
+      <span class="point__time" style="display: flex">
+        <input class="point__input" type="text" value="${this._timeStart}" name="timeStart">
+        <input class="point__input" type="text" value="${this._timeEnd}" name="timeEnd">
+      </span>
 
       <label class="point__price">
         write price
@@ -157,6 +166,10 @@ export class PointEdit extends Component {
         .addEventListener(`submit`, this._onSubmitButtonClick);
     this._element.querySelector(`.point__form`)
         .addEventListener(`reset`, this._onResetButtonClick);
+
+    this._dateFlatpickr = flatpickr(this._element.querySelector(`.point__date .point__input`), {altInput: true, altFormat: `M j`, dateFormat: `M j Y`});
+    this._timeStartFlatpickr = flatpickr(this._element.querySelector(`.point__time [name=timeStart]`), {enableTime: true, noCalendar: true, dateFormat: `H:i`, time_24hr: true, maxDate: this._element.querySelector(`.point__time [name=timeEnd]`).value});
+    this._timeEndFlatpickr = flatpickr(this._element.querySelector(`.point__time [name=timeEnd]`), {enableTime: true, noCalendar: true, dateFormat: `H:i`, time_24hr: true, minDate: this._element.querySelector(`.point__time [name=timeStart]`).value, maxDate: `23:59:59`});
   }
 
   unbind() {
@@ -171,14 +184,15 @@ export class PointEdit extends Component {
     this._destination = data.destination;
     this._offers = data.offers;
     this._price = data.price;
-    this._time = data.time;
+    this._timeStart = data.timeStart;
+    this._timeEnd = data.timeEnd;
     this._icon = this._travelWay.find((element) => element.name === this._type).icon;
   }
 
   static createMapper(target) {
     return {
-      'date': (value) => {
-        target.day = value;
+      'day': (value) => {
+        target.date = value;
       },
       'price': (value) => {
         target.price = value;
@@ -193,6 +207,12 @@ export class PointEdit extends Component {
         target.type = value;
       },
       'offer': (value) => target.offers.push(value),
+      'timeStart': (value) => {
+        target.timeStart = value;
+      },
+      'timeEnd': (value) => {
+        target.timeEnd = value;
+      },
     };
   }
 

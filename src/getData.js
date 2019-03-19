@@ -15,12 +15,20 @@ export default () => {
   ];
 
   const type = travelWay[Math.floor(Math.random() * travelWay.length)].name;
-  const timeStartHour = Math.floor(random(0, 24));
-  const timeStartMinute = Math.floor(random(0, 60));
-  const timeEndHour = Math.floor(random(0, 24));
-  const timeEndMinute = Math.floor(random(0, 60));
-  const timeStart = [timeStartHour < 10 ? `0` + timeStartHour.toString() : timeStartHour.toString()] + `:` + [timeStartMinute < 10 ? `0` + timeStartMinute : timeStartMinute];
-  const timeEnd = [timeEndHour < 10 ? `0` + timeEndHour : timeEndHour] + `:` + [timeEndMinute < 10 ? `0` + timeEndMinute : timeEndMinute];
+  const time = () => {
+    const timeHour = Math.floor(random(0, 24));
+    const timeMinute = Math.floor(random(0, 60));
+    return [timeHour < 10 ? `0` + timeHour.toString() : timeHour.toString()] + `:` + [timeMinute < 10 ? `0` + timeMinute : timeMinute]
+  };
+  const timeStart = time();
+  const timeEnd = time();
+  const getTimeEnd = (timeStart, timeEnd) => {
+    while (timeStart > timeEnd) {
+      timeEnd = time();
+    }
+    return timeEnd;
+  };
+
   const destinations = [`Amsterdam`, `Geneva`, `Chamonix`, `hotel`, `airport`, `Paris`, `Berlin`, `Milano`];
   const offersList = [
     {text: `Add luggage`,
@@ -66,6 +74,7 @@ export default () => {
       `In rutrum ac purus sit amet tempus.`], 3),
     price: Math.floor(Math.random() * 1000),
     date: getRandomData(`01.03.2018`, `01.12.2018`),
-    time: timeStart + ` &nbsp;&mdash; ` + timeEnd
+    timeStart,
+    timeEnd: getTimeEnd(timeStart, timeEnd),
   };
 };
