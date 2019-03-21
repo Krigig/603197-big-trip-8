@@ -29,6 +29,7 @@ export class PointEdit extends Component {
     this._dateFlatpickr = null;
     this._timeStartFlatpickr = null;
     this._timeEndFlatpickr = null;
+
   }
 
   _processForm(formData) {
@@ -162,14 +163,30 @@ export class PointEdit extends Component {
   }
 
   bind() {
+    const timeStartInput = this._element.querySelector(`.point__time [name=timeStart]`);
+    const timeEndInput = this._element.querySelector(`.point__time [name=timeEnd]`);
+
     this._element.querySelector(`.point__form`)
         .addEventListener(`submit`, this._onSubmitButtonClick);
     this._element.querySelector(`.point__form`)
         .addEventListener(`reset`, this._onResetButtonClick);
 
     this._dateFlatpickr = flatpickr(this._element.querySelector(`.point__date .point__input`), {altInput: true, altFormat: `M j`, dateFormat: `M j Y`});
-    this._timeStartFlatpickr = flatpickr(this._element.querySelector(`.point__time [name=timeStart]`), {enableTime: true, noCalendar: true, dateFormat: `H:i`, time_24hr: true, maxDate: this._element.querySelector(`.point__time [name=timeEnd]`).value});
-    this._timeEndFlatpickr = flatpickr(this._element.querySelector(`.point__time [name=timeEnd]`), {enableTime: true, noCalendar: true, dateFormat: `H:i`, time_24hr: true, minDate: this._element.querySelector(`.point__time [name=timeStart]`).value, maxDate: `23:59:59`});
+
+    this._timeStartFlatpickr = flatpickr(timeStartInput, {enableTime: true, noCalendar: true, dateFormat: `H:i`, time_24hr: true, maxDate: timeEndInput.value});
+    this._timeEndFlatpickr = flatpickr(timeEndInput, {enableTime: true, noCalendar: true, dateFormat: `H:i`, time_24hr: true, minDate: timeStartInput.value, maxDate: `23:59:59`});
+
+    timeStartInput.addEventListener(`change`, () => {
+      this._timeEndFlatpickr.set({
+        minDate: timeStartInput.value
+      });
+    });
+
+    timeEndInput.addEventListener(`change`, () => {
+      this._timeStartFlatpickr.set({
+        minDate: timeEndInput.value
+      });
+    });
   }
 
   unbind() {
@@ -177,6 +194,10 @@ export class PointEdit extends Component {
         .removeEventListener(`submit`, this._onSubmitButtonClick);
     this._element.querySelector(`.point__form`)
         .removeEventListener(`reset`, this._onResetButtonClick);
+
+    this._dateFlatpickr.destroy();
+    this._timeStartFlatpickr.destroy();
+    this._timeEndFlatpickr.destroy();
   }
 
   update(data) {
