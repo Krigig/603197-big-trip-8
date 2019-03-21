@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 const getRamdomArray = (arr, max) => {
   const shuffledArray = getShuffledArray(arr);
   const ramdomEnd = Math.floor(Math.random() * max);
@@ -33,4 +35,10 @@ const createElement = (template) => {
   return newElement.firstChild;
 };
 
-export {getRamdomArray, random, getRandomData, createElement};
+const getDiffTime = (timeStart, timeEnd) => {
+  const hour = moment(timeEnd, `h:mm`).diff(moment(timeStart, `h:mm`), `hour`);
+  const minute = moment(timeEnd, `h:mm`).diff(moment(timeStart, `h:mm`), `minute`) - hour * 60;
+  return hour + `H ` + minute + `M`;
+};
+
+export {getRamdomArray, random, getRandomData, createElement, getDiffTime};

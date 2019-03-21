@@ -21,7 +21,17 @@ firstPoint.onEdit = () => {
   firstPoint.unrender();
 };
 
-pointEditComponent.onSubmit = () => {
+pointEditComponent.onSubmit = (newObject) => {
+  pointData.price = newObject.price;
+  pointData.date = newObject.date;
+  pointData.type = newObject.type;
+  pointData.timeStart = newObject.timeStart;
+  pointData.timeEnd = newObject.timeEnd;
+  pointData.destination = newObject.destination;
+  pointData.offers = newObject.offers;
+  pointData.icon = newObject.icon;
+
+  firstPoint.update(pointData);
   firstPoint.render();
   tripPointsContainer.replaceChild(firstPoint.element, pointEditComponent.element);
   pointEditComponent.unrender();
@@ -32,4 +42,3 @@ pointEditComponent.onReset = () => {
   tripPointsContainer.replaceChild(firstPoint.element, pointEditComponent.element);
   pointEditComponent.unrender();
 };
-
