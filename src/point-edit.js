@@ -21,10 +21,12 @@ export class PointEdit extends Component {
 
     this._element = null;
     this._onSubmit = null;
-    this._onReset = null;
+    this._onDelete = null;
+
 
     this._onSubmitButtonClick = this._onSubmitButtonClick.bind(this);
-    this._onResetButtonClick = this._onResetButtonClick.bind(this);
+
+    this._onDeleteButtonClick = this._onDeleteButtonClick.bind(this);
 
     this._dateFlatpickr = null;
     this._timeStartFlatpickr = null;
@@ -61,8 +63,8 @@ export class PointEdit extends Component {
     return typeof this._onSubmit === `function` && this._onSubmit(newData);
   }
 
-  _onResetButtonClick() {
-    return typeof this._onReset === `function` && this._onReset();
+  _onDeleteButtonClick() {
+    return typeof this._onDelete === `function` && this._onDelete();
   }
 
   set onSubmit(fn) {
@@ -73,14 +75,19 @@ export class PointEdit extends Component {
     this._onReset = fn;
   }
 
+  set onDelete(fn) {
+    this._onDelete = fn;
+  }
+
   get template() {
     return `
 <article class="point">
   <form action="" method="get" class="point__form">
     <header class="point__header">
-      <label class="point__date">
+      <label class="point__date" style="display:block">
         choose day
-        <input class="point__input" type="text" placeholder="MAR 18" name="day">
+        <!-- <input class="point__input" type="text" value="${Date.now()}" name="day"> -->
+         <input class="point__input" type="text" value="${this._date}" name="day">
       </label>
 
       <div class="travel-way">
@@ -126,7 +133,7 @@ export class PointEdit extends Component {
 
       <div class="point__buttons">
         <button class="point__button point__button--save" type="submit">Save</button>
-        <button class="point__button" type="reset">Delete</button>
+        <button class="point__button point__button--delete" type="reset">Delete</button>
       </div>
 
       <div class="paint__favorite-wrap">
@@ -168,11 +175,12 @@ export class PointEdit extends Component {
 
     this._element.querySelector(`.point__form`)
         .addEventListener(`submit`, this._onSubmitButtonClick);
-    this._element.querySelector(`.point__form`)
-        .addEventListener(`reset`, this._onResetButtonClick);
+
+    this._element.querySelector(`.point__button--delete`)
+        .addEventListener(`click`, this._onDeleteButtonClick);
 
     this._dateFlatpickr = flatpickr(this._element.querySelector(`.point__date .point__input`), {altInput: true, altFormat: `M j`, dateFormat: `M j Y`});
-
+    this._dateFlatpickr.setDate(new Date(this._date));
     this._timeStartFlatpickr = flatpickr(timeStartInput, {enableTime: true, noCalendar: true, dateFormat: `H:i`, time_24hr: true, maxDate: timeEndInput.value});
     this._timeEndFlatpickr = flatpickr(timeEndInput, {enableTime: true, noCalendar: true, dateFormat: `H:i`, time_24hr: true, minDate: timeStartInput.value, maxDate: `23:59:59`});
 
@@ -192,8 +200,9 @@ export class PointEdit extends Component {
   unbind() {
     this._element.querySelector(`.point__form`)
         .removeEventListener(`submit`, this._onSubmitButtonClick);
-    this._element.querySelector(`.point__form`)
-        .removeEventListener(`reset`, this._onResetButtonClick);
+
+    this._element.querySelector(`.point__button--delete`)
+        .removeEventListener(`click`, this._onDeleteButtonClick);
 
     this._dateFlatpickr.destroy();
     this._timeStartFlatpickr.destroy();
@@ -205,6 +214,7 @@ export class PointEdit extends Component {
     this._destination = data.destination;
     this._offers = data.offers;
     this._price = data.price;
+    this._date = data.date;
     this._timeStart = data.timeStart;
     this._timeEnd = data.timeEnd;
     this._icon = this._travelWay.find((element) => element.name === this._type).icon;

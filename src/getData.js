@@ -73,7 +73,7 @@ export default () => {
       `Nunc fermentum tortor ac porta dapibus.`,
       `In rutrum ac purus sit amet tempus.`], 3),
     price: Math.floor(Math.random() * 1000),
-    date: getRandomData(`01.03.2018`, `01.12.2018`),
+    date: getRandomData(`01.01.2018`, `31.12.2019`),
     timeStart,
     timeEnd: getTimeEnd(timeStart, timeEnd),
   };

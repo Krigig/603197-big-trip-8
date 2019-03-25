@@ -59,6 +59,7 @@ export class Point extends Component {
     this._destination = data.destination;
     this._offers = data.offers;
     this._price = data.price;
+    this._date = data.date;
     this._timeStart = data.timeStart;
     this._timeEnd = data.timeEnd;
     this._icon = this._travelWay.find((element) => element.name === this._type).icon;

@@ -1,44 +1,26 @@
-import makeFilter from './make-filter.js';
 import getData from './getData.js';
-import {Point} from './point.js';
-import {PointEdit} from './point-edit.js';
+import filters from './filter-data.js';
 
-const filters = document.querySelector(`.trip-filter`);
+import {renderFilters} from './get-filter.js';
+import {renderPoints} from './get-points.js';
 
-filters.insertAdjacentHTML(`beforeend`, makeFilter(`Everything`, true));
-filters.insertAdjacentHTML(`beforeend`, makeFilter(`Future`));
-filters.insertAdjacentHTML(`beforeend`, makeFilter(`Past`));
+import {getChart} from './chart.js';
+
+
+document.querySelectorAll(`.view-switch__item`).forEach((switcher) => switcher.addEventListener(`click`, (evt) => {
+  evt.preventDefault();
+  document.querySelectorAll(`.block`).forEach((item) => item.classList.add(`visually-hidden`));
+  document.querySelector(`${evt.target.hash}`).classList.remove(`visually-hidden`);
+  document.querySelectorAll(`.view-switch__item`).forEach((item) => item.classList.remove(`view-switch__item--active`));
+  evt.target.classList.add(`view-switch__item--active`);
+}));
+
 
 const tripPointsContainer = document.querySelector(`.trip-day__items`);
-const pointData = getData();
-const firstPoint = new Point(pointData);
-const pointEditComponent = new PointEdit(pointData);
+const initialPoints = new Array(6).fill().map(getData);
+renderPoints(initialPoints, tripPointsContainer);
 
-tripPointsContainer.appendChild(firstPoint.render());
-firstPoint.onEdit = () => {
-  pointEditComponent.render();
-  tripPointsContainer.replaceChild(pointEditComponent.element, firstPoint.element);
-  firstPoint.unrender();
-};
+const filtersContainer = document.querySelector(`.trip-filter`);
+renderFilters(filters(), filtersContainer, renderPoints, initialPoints, tripPointsContainer);
 
-pointEditComponent.onSubmit = (newObject) => {
-  pointData.price = newObject.price;
-  pointData.date = newObject.date;
-  pointData.type = newObject.type;
-  pointData.timeStart = newObject.timeStart;
-  pointData.timeEnd = newObject.timeEnd;
-  pointData.destination = newObject.destination;
-  pointData.offers = newObject.offers;
-  pointData.icon = newObject.icon;
-
-  firstPoint.update(pointData);
-  firstPoint.render();
-  tripPointsContainer.replaceChild(firstPoint.element, pointEditComponent.element);
-  pointEditComponent.unrender();
-};
-
-pointEditComponent.onReset = () => {
-  firstPoint.render();
-  tripPointsContainer.replaceChild(firstPoint.element, pointEditComponent.element);
-  pointEditComponent.unrender();
-};
+getChart(initialPoints);
