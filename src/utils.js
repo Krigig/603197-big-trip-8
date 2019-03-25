@@ -2,6 +2,7 @@ import moment from 'moment';
 
 const getRamdomArray = (arr, max) => {
   const shuffledArray = getShuffledArray(arr);
+  // const ramdomEnd = random(1, max);
   const ramdomEnd = Math.floor(Math.random() * max);
   return shuffledArray.slice(0, ramdomEnd);
 };
