@@ -11,13 +11,13 @@ const updatePoint = (points, i, newPoint) => {
   return points[i];
 };
 
-const renderPoints = (points, container) => {
+const renderPoints = (points, container, dictionary) => {
   container.innerHTML = ``;
 
   for (let i = 0; i < points.length; i++) {
     const point = points[i];
-    const pointComponent = new Point(point);
-    const editPointComponent = new PointEdit(point);
+    const pointComponent = new Point(point, dictionary);
+    const editPointComponent = new PointEdit(point, dictionary);
 
     pointComponent.onEdit = () => {
       editPointComponent.render();
@@ -25,6 +25,12 @@ const renderPoints = (points, container) => {
           editPointComponent.element,
           pointComponent.element);
       pointComponent.unrender();
+    };
+
+    editPointComponent.onChangeDestination = (newObject) => {
+      const updatedPoint = updatePoint(points, i, newObject);
+      editPointComponent.update(updatedPoint);
+
     };
 
     editPointComponent.onSubmit = (newObject) => {

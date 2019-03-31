@@ -1,17 +1,16 @@
 import {Component} from './component.js';
 import {getDiffTime} from './utils.js';
 
-
 export class Point extends Component {
-  constructor(data) {
+  constructor(data, dictionary) {
     super();
-    this._travelWay = data.travelWay;
+    this._travelWay = dictionary.travelWay;
     this._type = data.type;
     this._icon = data.icon;
-    this._destinations = data.destinations;
+    this._destinations = dictionary.destinations;
     this._destination = data.destination;
     this._picture = data.picture;
-    this._offersList = data.offersList;
+    this._offersList = dictionary.offersList;
     this._offers = data.offers;
     this._description = data.description;
     this._price = data.price;
@@ -44,7 +43,7 @@ export class Point extends Component {
       </p>
       <p class="trip-point__price">&euro;&nbsp;${this._price}</p>
       <ul class="trip-point__offers">
-         ${this._offers.map((it) => (`<li><button class="trip-point__offer">${this._offersList.find((element) => element.id === it).text} + € ${this._offersList.find((element) => element.id === it).price}</button></li>`.trim())).join(``)}
+         ${this._offers.map((it) => (it.accepted ? (`<li><button class="trip-point__offer">${it.title} + € ${it.price}</button></li>`.trim()) : ``)).join(``)}
       </ul>
     </article>`.trim();
   }

@@ -3,15 +3,15 @@ import flatpickr from 'flatpickr';
 
 
 export class PointEdit extends Component {
-  constructor(data) {
+  constructor(data, dictionary) {
     super();
-    this._travelWay = data.travelWay;
+    this._travelWay = dictionary.travelWay;
     this._type = data.type;
     this._icon = data.icon;
-    this._destinations = data.destinations;
+    this._destinations = dictionary.destinations;
     this._destination = data.destination;
     this._picture = data.picture;
-    this._offersList = data.offersList;
+    this._offersList = dictionary.offersList;
     this._offers = data.offers;
     this._description = data.description;
     this._price = data.price;
@@ -22,11 +22,12 @@ export class PointEdit extends Component {
     this._element = null;
     this._onSubmit = null;
     this._onDelete = null;
+    this._onChangeDestination = null;
 
 
     this._onSubmitButtonClick = this._onSubmitButtonClick.bind(this);
-
     this._onDeleteButtonClick = this._onDeleteButtonClick.bind(this);
+    this._onChangeDestinationButtonClick = this._onChangeDestinationButtonClick.bind(this);
 
     this._dateFlatpickr = null;
     this._timeStartFlatpickr = null;
@@ -40,7 +41,7 @@ export class PointEdit extends Component {
       type: this._type,
       price: ``,
       destination: ``,
-      offers: [],
+      offers: this._offers,
       timeStart: ``,
       timeEnd: ``,
       icon: ``
@@ -67,16 +68,20 @@ export class PointEdit extends Component {
     return typeof this._onDelete === `function` && this._onDelete();
   }
 
+  _onChangeDestinationButtonClick() {
+    return typeof _onChangeDestination === `function` && this.__onChangeDestination();
+  }
+
   set onSubmit(fn) {
     this._onSubmit = fn;
   }
 
-  set onReset(fn) {
-    this._onReset = fn;
-  }
-
   set onDelete(fn) {
     this._onDelete = fn;
+  }
+
+  set с(fn) {
+    this._onChangeDestination = fn;
   }
 
   get template() {
@@ -111,19 +116,15 @@ export class PointEdit extends Component {
         <input class="point__destination-input" list="destination-select" id="destination" value="${this._destination}" name="destination">
         <datalist id="destination-select">
           ${this._destinations.map((it) => (`
-          <option value="${it}"></option>
-          `.trim())).join(``)}
-          <option value="airport"></option>
-          <option value="Geneva"></option>
-          <option value="Chamonix"></option>
-          <option value="hotel"></option>
+          <option value="${it.name}"></option>
+          `)).join(` `)}
         </datalist>
       </div>
-
-      <span class="point__time" style="display: flex">
-        <input class="point__input" type="text" value="${this._timeStart}" name="timeStart">
-        <input class="point__input" type="text" value="${this._timeEnd}" name="timeEnd">
-      </span>
+      <div class="point__time">
+          choose time
+          <input class="point__input" type="text" value="${this._timeStart}" name="timeStart" placeholder="19:00">
+          <input class="point__input" type="text" value="${this._timeStart}" name="timeEnd" placeholder="21:00">
+      </div>
 
       <label class="point__price">
         write price
@@ -147,10 +148,10 @@ export class PointEdit extends Component {
         <h3 class="point__details-title">offers</h3>
 
         <div class="point__offers-wrap">
-          ${this._offersList.map((it) => (`
-          <input ${this._offers.reduce((acc, item) => acc || item === it.id, false) ? `checked` : ``} class="point__offers-input visually-hidden" type="checkbox" id="${it.id}" name="offer" value="${it.id}">
-          <label for="${it.id}" class="point__offers-label">
-             <span class="point__offer-service">${it.text}</span> + €<span class="point__offer-price">${it.price}</span>
+          ${this._offers.map((it) => (`
+          <input ${it.accepted ? `checked` : ``} class="point__offers-input visually-hidden" type="checkbox" id="${it.title.split(` `).join`-`}" name="offer" value="${it.title.split(` `).join(`-`)}">
+          <label for="${it.title.split(` `).join(`-`)}" class="point__offers-label">
+             <span class="point__offer-service">${it.title}</span> + €<span class="point__offer-price">${it.price}</span>
           </label>
           `.trim())).join(``)}
         </div>
@@ -160,7 +161,7 @@ export class PointEdit extends Component {
         <h3 class="point__details-title">Destination</h3>
         <p class="point__destination-text">Geneva is a city in Switzerland that lies at the southern tip of expansive Lac Léman (Lake Geneva). Surrounded by the Alps and Jura mountains, the city has views of dramatic Mont Blanc.</p>
         <div class="point__destination-images">
-          <img src="${this._picture}" alt="picture from place" class="point__destination-image">
+        ${this._picture.map((it) => `<img src="${it.src}" alt="${it.description}" class="point__destination-image">`)}
         </div>
       </section>
       <input type="hidden" class="point__total-price" name="total-price" value="">
@@ -178,6 +179,10 @@ export class PointEdit extends Component {
 
     this._element.querySelector(`.point__button--delete`)
         .addEventListener(`click`, this._onDeleteButtonClick);
+
+    this._element.querySelector(`.point__destination-input`)
+        .addEventListener(`change`, this._onChangeDestinationButtonClick);
+
 
     this._dateFlatpickr = flatpickr(this._element.querySelector(`.point__date .point__input`), {altInput: true, altFormat: `M j`, dateFormat: `M j Y`});
     this._dateFlatpickr.setDate(new Date(this._date));
@@ -221,6 +226,9 @@ export class PointEdit extends Component {
   }
 
   static createMapper(target) {
+    target.offers.map((it) => {
+      it.accepted = false;
+    });
     return {
       'day': (value) => {
         target.date = value;
@@ -237,7 +245,9 @@ export class PointEdit extends Component {
       'travel-way': (value) => {
         target.type = value;
       },
-      'offer': (value) => target.offers.push(value),
+      'offer': (value) => {
+        target.offers.find((element) => element.title === value.split(`-`).join(` `)).accepted = true;
+      },
       'timeStart': (value) => {
         target.timeStart = value;
       },
