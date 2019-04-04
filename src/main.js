@@ -105,7 +105,7 @@ api.getOffers()
     api.getPoints()
     .then((points) => {
       renderPoints(points);
-      // getChart(points);
+      getChart(points);
     })
     .catch(getMessageError);
   });
