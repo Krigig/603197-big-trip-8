@@ -219,10 +219,7 @@ const getTimeSpendChart = (label, dataStatictic) => {
 const getChart = (data) => {
   const moneyArray = data.map((it) => {
     if (it.offers.length !== 0) {
-      return it.price + it.offers.map((one) =>
-        it.offersList.find((element) =>
-          element.id === one).price).reduce((acc, item) =>
-        acc + item);
+      return it.price + it.offers.reduce((acc, item) => acc + +[item.accepted ? item.price : 0], 0);
     } else {
       return it.price;
     }
