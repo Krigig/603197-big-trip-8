@@ -4,6 +4,7 @@ import {getDiffTime} from './utils.js';
 export class Point extends Component {
   constructor(data, dictionary) {
     super();
+    this._id = data.id;
     this._travelWay = dictionary.travelWay;
     this._type = data.type;
     this._icon = data.icon;

@@ -10,9 +10,14 @@ export class ModelPoint {
     this.picture = data.destination[`pictures`] || ``;
     this.description = data.destination.description;
     this.price = data[`base_price`];
-    this.timeStart = moment(data[`date_from`]).format(`h:mm`);
-    this.timeEnd = moment(data[`date_to`]).format(`h:mm`);
-    this.offers = data.offers;
+    this.timeStart = moment(data[`date_from`], `x`).format(`h:mm`);
+    this.timeEnd = moment(data[`date_to`], `x`).format(`h:mm`);
+    this.offers = data.offers.map((it) => ({
+      'id': it.title.split(` `).join(`-`),
+      'accepted': it.accepted,
+      'title': it.title,
+      'price': it.price
+    }));
   }
 
   toRAW() {

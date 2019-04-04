@@ -4,7 +4,7 @@ import {API} from './api.js';
 import {dictionary} from './dictionary';
 
 import {renderFilters} from './get-filter.js';
-import {renderPoints} from './get-points.js';
+// import {renderPoints} from './get-points.js';
 
 import {getChart} from './chart.js';
 
@@ -17,17 +17,80 @@ document.querySelectorAll(`.view-switch__item`).forEach((switcher) => switcher.a
   evt.target.classList.add(`view-switch__item--active`);
 }));
 
-const tripPointsContainer = document.querySelector(`.trip-day__items`);
-
 // const filtersContainer = document.querySelector(`.trip-filter`);
 // renderFilters(filters(), filtersContainer, renderPoints, initialPoints, tripPointsContainer);
 
-const AUTHORIZATION = `Basic eo0w590ik29889a`;
+const AUTHORIZATION = `Basic dXNlckBwYXNzd29yZAo=${Math.random()}`;
 const END_POINT = `https://es8-demo-srv.appspot.com/big-trip`;
 
+import {Point} from './point.js';
+import {PointEdit} from './point-edit.js';
+
 const api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
+const container = document.querySelector(`.trip-day__items`);
 
+const getMessageWaite = () => {
+  container.innerHTML = `Loading route...`;
+};
+const getMessageError = () => {
+  container.innerHTML = `Something went wrong while loading your route info. Check your connection or try again later`;
+};
 
+const renderPoints = (points) => {
+  container.innerHTML = ``;
+
+  for (let i = 0; i < points.length; i++) {
+    let point = points[i];
+    const pointComponent = new Point(point, dictionary);
+    const editPointComponent = new PointEdit(point, dictionary);
+
+    pointComponent.onEdit = () => {
+      editPointComponent.render();
+      container.replaceChild(
+          editPointComponent.element,
+          pointComponent.element);
+      pointComponent.unrender();
+    };
+
+    editPointComponent.onSubmit = (newObject) => {
+
+      point.type = newObject.type;
+      point.offers = newObject.offers;
+      point.price = newObject.price;
+      point.destination = newObject.destination;
+      point.timeStart = newObject.timeStart;
+      point.timeEnd = newObject.timeEnd;
+
+      editPointComponent.blockSave();
+
+      api.updatePoint({id: point.id, data: point.toRAW()})
+        .then((newData) => {
+          editPointComponent.unblockSave();
+          pointComponent.update(newData);
+          pointComponent.render();
+          container.replaceChild(pointComponent.element, editPointComponent.element);
+          editPointComponent.unrender();
+        })
+        .catch(() => {
+          editPointComponent.catchError();
+          editPointComponent.unblockSave();
+        });
+    };
+
+    editPointComponent.onDelete = (id) => {
+      editPointComponent.blockDelete();
+      api.deletePoint(id)
+        .then(editPointComponent.unrender())
+        .catch(() => {
+          editPointComponent.catchError();
+          editPointComponent.unblockDelete();
+        });
+    };
+    container.appendChild(pointComponent.render());
+  }
+};
+
+getMessageWaite();
 api.getOffers()
   .then((responsiv) => {
     dictionary.offersList = responsiv;
@@ -41,24 +104,8 @@ api.getOffers()
   .then(() => {
     api.getPoints()
     .then((points) => {
-      renderPoints(points, tripPointsContainer, dictionary);
+      renderPoints(points);
       // getChart(points);
-      console.log(points);
-      console.log(dictionary);
-    });
+    })
+    .catch(getMessageError);
   });
-// api.getDestination()
-//   .then((destination) => {
-//     destinations = destination;
-//     // console.log(destination);
-//   });
-
-// const options = {
-//   headers: new Headers({
-//       'Authorization': 'Basic eo0w590ik29889a',
-//       'Content-Type': `application/json`
-//   })
-// };
-// fetch('https://es8-demo-srv.appspot.com/big-trip/destinations', options)
-//   .then(data => data.json())
-//   .then(data => console.log(data));

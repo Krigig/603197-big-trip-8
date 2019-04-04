@@ -1,4 +1,5 @@
 import {ModelPoint} from './parseData.js';
+import {ModelOffer} from './parse-offers-data';
 
 const Method = {
   GET: `GET`,
@@ -33,7 +34,8 @@ export class API {
 
   getOffers() {
     return this._load({url: `offers`})
-      .then(toJSON);
+      .then(toJSON)
+      .then(ModelOffer.parseOffers);
   }
 
   getPoints() {
@@ -64,7 +66,7 @@ export class API {
       .then(ModelPoint.parsePoint);
   }
 
-  deletePoint({id}) {
+  deletePoint(id) {
     return this._load({url: `points/${id}`, method: Method.DELETE});
   }
 

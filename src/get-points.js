@@ -1,21 +1,22 @@
 import {Point} from './point.js';
 import {PointEdit} from './point-edit.js';
 
+
 const deletePoint = (points, i) => {
   points.splice(i, 1);
   return points;
 };
 
-const updatePoint = (points, i, newPoint) => {
+const getUpdatePoint = (points, i, newPoint) => {
   points[i] = Object.assign({}, points[i], newPoint);
   return points[i];
 };
 
-const renderPoints = (points, container, dictionary) => {
+const renderPoints = (points, container, dictionary, api) => {
   container.innerHTML = ``;
 
   for (let i = 0; i < points.length; i++) {
-    const point = points[i];
+    let point = points[i];
     const pointComponent = new Point(point, dictionary);
     const editPointComponent = new PointEdit(point, dictionary);
 
@@ -27,26 +28,29 @@ const renderPoints = (points, container, dictionary) => {
       pointComponent.unrender();
     };
 
-    editPointComponent.onChangeDestination = (newObject) => {
-      const updatedPoint = updatePoint(points, i, newObject);
-      editPointComponent.update(updatedPoint);
-
-    };
-
     editPointComponent.onSubmit = (newObject) => {
-      const updatedPoint = updatePoint(points, i, newObject);
+      point = getUpdatePoint(points, i, newObject);
 
-      pointComponent.update(updatedPoint);
-      pointComponent.render();
-      container.replaceChild(
-          pointComponent.element,
-          editPointComponent.element);
-      editPointComponent.unrender();
+      api.updatePoint({id: point.id, data: point.toRAW()})
+        .then((newData) => {
+          pointComponent.update(newData);
+          pointComponent.render();
+
+          container.replaceChild(pointComponent.element, editPointComponent.element);
+
+          editPointComponent.unrender();
+        });
     };
+
+    // editPointComponent.onDelete = () => {
+    //   deletePoint(points, i);
+    //   editPointComponent.unrender();
+    // };
 
     editPointComponent.onDelete = () => {
-      deletePoint(points, i);
-      editPointComponent.unrender();
+      api.deletePoint(i)
+        .then(() => api.getPoints())
+        .then(renderPoints);
     };
 
     container.appendChild(pointComponent.render());
