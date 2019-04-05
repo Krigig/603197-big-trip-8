@@ -1,10 +1,8 @@
-import getData from './getData.js';
 import filters from './filter-data.js';
 import {API} from './api.js';
 import {dictionary} from './dictionary';
 
 import {renderFilters} from './get-filter.js';
-// import {renderPoints} from './get-points.js';
 
 import {getChart} from './chart.js';
 
@@ -16,9 +14,6 @@ document.querySelectorAll(`.view-switch__item`).forEach((switcher) => switcher.a
   document.querySelectorAll(`.view-switch__item`).forEach((item) => item.classList.remove(`view-switch__item--active`));
   evt.target.classList.add(`view-switch__item--active`);
 }));
-
-// const filtersContainer = document.querySelector(`.trip-filter`);
-// renderFilters(filters(), filtersContainer, renderPoints, initialPoints, tripPointsContainer);
 
 const AUTHORIZATION = `Basic dXNlckBwYXNzd29yZAo=${Math.random()}`;
 const END_POINT = `https://es8-demo-srv.appspot.com/big-trip`;
@@ -60,6 +55,8 @@ const renderPoints = (points) => {
       point.destination = newObject.destination;
       point.timeStart = newObject.timeStart;
       point.timeEnd = newObject.timeEnd;
+      point.dateValue = newObject.date;
+      point.dateEndValue = newObject.dateEnd;
 
       editPointComponent.blockSave();
 
@@ -90,6 +87,8 @@ const renderPoints = (points) => {
   }
 };
 
+const filtersContainer = document.querySelector(`.trip-filter`);
+
 getMessageWaite();
 api.getOffers()
   .then((responsiv) => {
@@ -104,6 +103,7 @@ api.getOffers()
   .then(() => {
     api.getPoints()
     .then((points) => {
+      renderFilters(filters(), filtersContainer, renderPoints, points, container);
       renderPoints(points);
       getChart(points);
     })

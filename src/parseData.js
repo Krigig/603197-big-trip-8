@@ -1,5 +1,6 @@
 import moment from 'moment';
 import {dictionary} from './dictionary.js';
+import {getDiffTime} from './utils.js';
 
 export class ModelPoint {
   constructor(data) {
@@ -10,8 +11,11 @@ export class ModelPoint {
     this.picture = data.destination[`pictures`] || ``;
     this.description = data.destination.description;
     this.price = data[`base_price`];
-    this.timeStart = moment(data[`date_from`], `x`).format(`h:mm`);
-    this.timeEnd = moment(data[`date_to`], `x`).format(`h:mm`);
+    this.date = data[`date_from`];
+    this.dateEnd = data[`date_to`];
+    this.timeStart = moment(data[`date_from`], `x`).format(`HH:mm`);
+    this.timeEnd = moment(data[`date_to`], `x`).format(`HH:mm`);
+    this.tripDuration = getDiffTime(data[`date_from`], data[`date_to`]);
     this.offers = data.offers.map((it) => ({
       'id': it.title.split(` `).join(`-`),
       'accepted': it.accepted,
@@ -30,8 +34,8 @@ export class ModelPoint {
         'description': this.description,
       },
       'base_price': this.price,
-      'date_from': moment(this.timeStart, `h:mm`).format(`x`),
-      'date_to': moment(this.timeEnd, `h:mm`).format(`x`),
+      'date_from': moment(this.dateValue + ` ` + this.timeStart, `DD HH:mm`).format(`x`),
+      'date_to': moment(this.dateEndValue + ` ` + this.timeEnd, `DD, HH:mm`).format(`x`),
       'offers': this.offers
     };
   }

@@ -36,9 +36,14 @@ const createElement = (template) => {
 };
 
 const getDiffTime = (timeStart, timeEnd) => {
-  const hour = moment(timeEnd, `h:mm`).diff(moment(timeStart, `h:mm`), `hour`);
-  const minute = moment(timeEnd, `h:mm`).diff(moment(timeStart, `h:mm`), `minute`) - hour * 60;
-  return hour + `H ` + minute + `M`;
+  let hour = Math.floor((timeEnd - timeStart) / 3600000);
+  let day = 0;
+  if (hour > 24) {
+    day = hour % 24;
+    hour = hour - day * 24;
+  }
+  const minute = Math.floor((timeEnd - timeStart) / 60000 - hour * 60 - day * 24 * 60);
+  return [day !== 0 ? day + `D ` : ``] + [hour !== 0 ? hour + `H ` : ``] + [minute !== 0 ? minute + `M ` : ``];
 };
 
 export {getRamdomArray, random, getRandomData, createElement, getDiffTime};

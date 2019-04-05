@@ -17,6 +17,7 @@ export class PointEdit extends Component {
     this._description = data.description;
     this._price = data.price;
     this._date = data.date;
+    this._dateEnd = data.dateEnd;
     this._timeStart = data.timeStart;
     this._timeEnd = data.timeEnd;
 
@@ -38,7 +39,8 @@ export class PointEdit extends Component {
 
   _processForm(formData) {
     const entry = {
-      date: ``,
+      date: new Date(this._date).getDate(),
+      dateEnd: new Date(this._dateEnd).getDate(),
       type: this._type,
       price: ``,
       destination: ``,
@@ -120,7 +122,7 @@ export class PointEdit extends Component {
 <article class="point">
   <form action="" method="get" class="point__form">
     <header class="point__header">
-      <label class="point__date">
+      <label class="point__date" style="display:block">
         choose day
         <!-- <input class="point__input" type="text" value="${Date.now()}" name="day"> -->
          <input class="point__input" type="text" value="${this._date}" name="day">
@@ -154,7 +156,7 @@ export class PointEdit extends Component {
       <div class="point__time">
           choose time
           <input class="point__input" type="text" value="${this._timeStart}" name="timeStart" placeholder="19:00">
-          <input class="point__input" type="text" value="${this._timeStart}" name="timeEnd" placeholder="21:00">
+          <input class="point__input" type="text" value="${this._timeEnd}" name="timeEnd" placeholder="21:00">
       </div>
 
       <label class="point__price">
@@ -248,20 +250,9 @@ export class PointEdit extends Component {
 
     this._dateFlatpickr = flatpickr(this._element.querySelector(`.point__date .point__input`), {altInput: true, altFormat: `M j`, dateFormat: `M j Y`});
     this._dateFlatpickr.setDate(new Date(this._date));
-    this._timeStartFlatpickr = flatpickr(timeStartInput, {enableTime: true, noCalendar: true, dateFormat: `H:i`, time_24hr: true, maxDate: timeEndInput.value});
-    this._timeEndFlatpickr = flatpickr(timeEndInput, {enableTime: true, noCalendar: true, dateFormat: `H:i`, time_24hr: true, minDate: timeStartInput.value, maxDate: `23:59:59`});
+    this._timeStartFlatpickr = flatpickr(timeStartInput, {enableTime: true, noCalendar: true, dateFormat: `H:i`, time_24hr: true});
+    this._timeEndFlatpickr = flatpickr(timeEndInput, {enableTime: true, noCalendar: true, dateFormat: `H:i`, time_24hr: true});
 
-    timeStartInput.addEventListener(`change`, () => {
-      this._timeEndFlatpickr.set({
-        minDate: timeStartInput.value
-      });
-    });
-
-    timeEndInput.addEventListener(`change`, () => {
-      this._timeStartFlatpickr.set({
-        minDate: timeEndInput.value
-      });
-    });
   }
 
   unbind() {
@@ -281,7 +272,7 @@ export class PointEdit extends Component {
     this._destination = data.destination;
     this._offers = data.offers;
     this._price = data.price;
-    this._date = data.date;
+
     this._timeStart = data.timeStart;
     this._timeEnd = data.timeEnd;
     this._icon = this._travelWay.find((element) => element.name === this._type).icon;
@@ -292,9 +283,6 @@ export class PointEdit extends Component {
       it.accepted = false;
     });
     return {
-      'day': (value) => {
-        target.date = value;
-      },
       'price': (value) => {
         target.price = value;
       },
