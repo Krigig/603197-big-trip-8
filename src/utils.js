@@ -1,5 +1,3 @@
-import moment from 'moment';
-
 const getRamdomArray = (arr, max) => {
   const shuffledArray = getShuffledArray(arr);
   const ramdomEnd = Math.floor(Math.random() * max);

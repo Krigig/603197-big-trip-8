@@ -2,7 +2,7 @@ const dictionary = {
   destinations: [],
   offersList: [],
   travelWay: [
-    {name: `taxi`, icon:  `🚕 `},
+    {name: `taxi`, icon: `🚕 `},
     {name: `bus`, icon: `🚌 `},
     {name: `train`, icon: `🚂`},
     {name: `ship`, icon: `🛳️`},

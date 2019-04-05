@@ -11,6 +11,7 @@ const filterPoints = (points, filterName) => {
     case `past`:
       return points.filter((it) => it.date < Date.now());
   }
+  return points;
 };
 
 const renderFilters = (data, container, callback, filteredArray, filteresArrayContainer) => {
