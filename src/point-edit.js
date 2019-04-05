@@ -52,9 +52,10 @@ export class PointEdit extends Component {
     const pointEditMapper = PointEdit.createMapper(entry);
     for (const pair of formData.entries()) {
       const [property, value] = pair;
-      pointEditMapper[property] && pointEditMapper[property](value);
+      if (pointEditMapper[property]) {
+        pointEditMapper[property](value);
+      }
     }
-    console.log(entry);
     return entry;
   }
 
@@ -250,8 +251,8 @@ export class PointEdit extends Component {
 
     this._dateFlatpickr = flatpickr(this._element.querySelector(`.point__date .point__input`), {altInput: true, altFormat: `M j`, dateFormat: `M j Y`});
     this._dateFlatpickr.setDate(new Date(this._date));
-    this._timeStartFlatpickr = flatpickr(timeStartInput, {enableTime: true, noCalendar: true, dateFormat: `H:i`, time_24hr: true});
-    this._timeEndFlatpickr = flatpickr(timeEndInput, {enableTime: true, noCalendar: true, dateFormat: `H:i`, time_24hr: true});
+    this._timeStartFlatpickr = flatpickr(timeStartInput, {'enableTime': true, 'noCalendar': true, 'dateFormat': `H:i`, 'time_24hr': true});
+    this._timeEndFlatpickr = flatpickr(timeEndInput, {'enableTime': true, 'noCalendar': true, 'dateFormat': `H:i`, 'time_24hr': true});
 
   }
 
