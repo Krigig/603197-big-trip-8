@@ -1,5 +1,5 @@
 import {Component} from './component.js';
-import {getDiffTime} from './utils.js';
+
 
 export class Point extends Component {
   constructor(data, dictionary) {
@@ -18,6 +18,7 @@ export class Point extends Component {
     this._date = data.date;
     this._timeStart = data.timeStart;
     this._timeEnd = data.timeEnd;
+    this._tripDuration = data.tripDuration;
 
     this._element = null;
     this._onEdit = null;
@@ -40,7 +41,7 @@ export class Point extends Component {
       <h3 class="trip-point__title">${this._type} to ${this._destination}</h3>
       <p class="trip-point__schedule">
         <span class="trip-point__timetable">${this._timeStart} &nbsp;&mdash; ${this._timeEnd}</span>
-        <span class="trip-point__duration">${getDiffTime(this._timeStart, this._timeEnd)}</span>
+        <span class="trip-point__duration">${this._tripDuration}</span>
       </p>
       <p class="trip-point__price">&euro;&nbsp;${this._price}</p>
       <ul class="trip-point__offers">
@@ -59,10 +60,11 @@ export class Point extends Component {
     this._destination = data.destination;
     this._offers = data.offers;
     this._price = data.price;
-    this._date = data.date;
+
     this._timeStart = data.timeStart;
     this._timeEnd = data.timeEnd;
     this._icon = this._travelWay.find((element) => element.name === this._type).icon;
+    this._tripDuration = data.tripDuration;
   }
 
 }
