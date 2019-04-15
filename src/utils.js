@@ -1,3 +1,6 @@
+const ESC_KEY = 27;
+const isEscEvent = (evt, action) => evt.keyCode === ESC_KEY ? action() : ``;
+
 const getRamdomArray = (arr, max) => {
   const shuffledArray = getShuffledArray(arr);
   const ramdomEnd = Math.floor(Math.random() * max);
@@ -33,15 +36,33 @@ const createElement = (template) => {
   return newElement.firstChild;
 };
 
-const getDiffTime = (timeStart, timeEnd) => {
-  let hour = Math.floor((timeEnd - timeStart) / 3600000);
+const getDiffTime = (timeStart, timeEnd) => Math.floor((timeEnd - timeStart) / 60000);
+
+const getDiffTimeParse = (minute) => {
+  let hour = Math.floor(minute / 60);
   let day = 0;
   if (hour > 24) {
-    day = hour % 24;
+    day = Math.floor(hour / 24);
     hour = hour - day * 24;
   }
-  const minute = Math.floor((timeEnd - timeStart) / 60000 - hour * 60 - day * 24 * 60);
-  return [day !== 0 ? day + `D ` : ``] + [hour !== 0 ? hour + `H ` : ``] + [minute !== 0 ? minute + `M ` : ``];
+  const min = Math.floor(minute - hour * 60 - day * 24 * 60);
+  return [day !== 0 ? day + `D ` : ``] + [hour !== 0 ? hour + `H ` : ``] + [min !== 0 ? min + `M` : ``];
 };
 
-export {getRamdomArray, random, getRandomData, createElement, getDiffTime};
+const getTotalPrice = (point) => {
+  if (point.offers.length !== 0) {
+    return +point.price + point.offers.reduce((acc, item) => acc + +[item.accepted ? item.price : 0], 0);
+  } else {
+    return point.price;
+  }
+};
+
+const getTotalCost = (points) => {
+  let cost = 0;
+  for (const point of points) {
+    cost += +getTotalPrice(point);
+  }
+  return cost;
+};
+
+export {getRamdomArray, random, getRandomData, createElement, getDiffTime, getTotalPrice, getTotalCost, isEscEvent, getDiffTimeParse};

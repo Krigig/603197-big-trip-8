@@ -1,6 +1,8 @@
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
+import {getDiffTime} from './utils.js';
+
 // Рассчитаем высоту канваса в зависимости от того, сколько данных в него будет передаваться
 const BAR_HEIGHT = 55;
 
@@ -146,6 +148,77 @@ const getTransportChart = (label, dataStatictic) => {
 
 };
 
+const getTimeSpendChart = (label, dataStatictic) => {
+  const timeSpendCtx = document.querySelector(`.statistic__time-spend`);
+  timeSpendCtx.height = BAR_HEIGHT * 4;
+
+  return new Chart(timeSpendCtx, {
+    plugins: [ChartDataLabels],
+    type: `horizontalBar`,
+    data: {
+      labels: label,
+      datasets: [{
+        data: dataStatictic,
+        backgroundColor: `#ffffff`,
+        hoverBackgroundColor: `#ffffff`,
+        anchor: `start`
+      }]
+    },
+    options: {
+      plugins: {
+        datalabels: {
+          font: {
+            size: 13
+          },
+          color: `#000000`,
+          anchor: `end`,
+          align: `start`,
+          formatter: (val) => `${val}H`
+        }
+      },
+      title: {
+        display: true,
+        text: `TIME SPENT`,
+        fontColor: `#000000`,
+        fontSize: 23,
+        position: `left`
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            fontColor: `#000000`,
+            padding: 5,
+            fontSize: 13,
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false
+          },
+          barThickness: 44
+        }],
+        xAxes: [{
+          ticks: {
+            display: false,
+            beginAtZero: true,
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false
+          },
+          minBarLength: 50
+        }],
+      },
+      legend: {
+        display: false
+      },
+      tooltips: {
+        enabled: false,
+      }
+    }
+  });
+
+};
+
 const getChart = (data) => {
   const moneyArray = data.map((it) => {
     if (it.offers.length !== 0) {
@@ -172,6 +245,18 @@ const getChart = (data) => {
 
   getTransportChart(transportLabel, transportData);
 
+  const timeSpentStaticticData = data.map((it) => ({name: it.icon + ` ` + it.type.toUpperCase(), time: getDiffTime(it.date, it.dateEnd)}))
+    .reduce((acc, item) => {
+      if (acc[item.name]) {
+        acc[item.name] += item.time;
+      } else {
+        acc[item.name] = item.time;
+      }
+      return acc;
+    }, {});
+  const timeSpendLabel = Object.keys(timeSpentStaticticData);
+  const timeSpendData = Object.values(timeSpentStaticticData).map((it) => Math.floor(it / 60));
+  getTimeSpendChart(timeSpendLabel, timeSpendData);
 };
 
 export {getChart};
