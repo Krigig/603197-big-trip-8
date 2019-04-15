@@ -70,6 +70,7 @@ const renderPoints = (points) => {
       point.destination = newObject.destination;
       point.date = newObject.date;
       point.dateEnd = newObject.dateEnd;
+      point.isFavorite = newObject.isFavorite;
 
       editPointComponent.blockSave();
 
