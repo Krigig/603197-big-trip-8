@@ -79,6 +79,14 @@ const renderPoints = (points) => {
           pointComponent.update(newData);
           closeEditPoint();
         })
+        .then(() => {
+          api.getPoints()
+            .then((updatePoints) => {
+              renderPoints(updatePoints);
+              getChart(updatePoints);
+              renderTotalCost(updatePoints);
+            });
+        })
         .catch(() => {
           editPointComponent.catchError();
           editPointComponent.unblockSave();
@@ -141,18 +149,18 @@ api.getOffers()
 
 document.querySelector(`.new-event`).addEventListener(`click`, function () {
   const newEventData = new ModelPoint({
-    id: `-1`,
-    type: ``,
-    icon: ``,
-    destination: {
-      name: ``,
-      pictures: [],
-      description: ``,
+    'id': ``,
+    'type': ``,
+    'destination': {
+      'name': ``,
+      'pictures': [],
+      'description': ``,
     },
-    price: ``,
-    date: ``,
-    dateEnd: ``,
-    offers: []
+    'base_price': 0,
+    'date_from': Date.now(),
+    'date_to': Date.now(),
+    'offers': [],
+    'is_favorite': false
   });
   const newEvent = new PointEdit(newEventData, dictionary);
   const closeNewEvent = () => newEvent.unrender();

@@ -60,7 +60,7 @@ const getTotalPrice = (point) => {
 const getTotalCost = (points) => {
   let cost = 0;
   for (const point of points) {
-    cost += getTotalPrice(point);
+    cost += +getTotalPrice(point);
   }
   return cost;
 };

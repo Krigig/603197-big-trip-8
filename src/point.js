@@ -13,6 +13,7 @@ export class Point extends Component {
     this._picture = data.picture;
     this._offersList = dictionary.offersList;
     this._offers = data.offers;
+    this._checkedOffers = data.offers.filter((it) => it.accepted === true);
     this._description = data.description;
     this._price = data.price;
     this._date = data.date;
@@ -46,7 +47,9 @@ export class Point extends Component {
       </p>
       <p class="trip-point__price">&euro;&nbsp;${this._price}</p>
       <ul class="trip-point__offers">
-         ${this._offers.map((it) => (it.accepted ? (`<li><button class="trip-point__offer">${it.title} + € ${it.price}</button></li>`.trim()) : ``)).join(``)}
+         ${this._checkedOffers.length > 3 ? this._checkedOffers.slice(0, 3)
+                                                                .map((it) => (`<li><button class="trip-point__offer">${it.title} + € ${it.price}</button></li>`.trim()))
+                                                                .join(``) : this._checkedOffers.map((it) => (`<li><button class="trip-point__offer">${it.title} + € ${it.price}</button></li>`.trim())).join(``)}
       </ul>
     </article>`.trim();
   }
@@ -60,12 +63,13 @@ export class Point extends Component {
     this._type = data.type;
     this._destination = data.destination;
     this._offers = data.offers;
+    this._checkedOffers = data.offers.filter((it) => it.accepted === true);
     this._price = data.price;
     this._isFavorite = data.isFavorite;
 
     this._timeStart = data.timeStart;
     this._timeEnd = data.timeEnd;
-    this._icon = this._travelWay.find((element) => element.name === this._type).icon;
+    this._icon = this._travelWay.find((element) => element.name === this._type) ? this._travelWay.find((element) => element.name === this._type).icon : ``;
     this._tripDuration = data.tripDuration;
   }
 

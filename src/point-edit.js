@@ -284,13 +284,13 @@ export class PointEdit extends Component {
 
     timeStartInput.addEventListener(`change`, () => {
       this._timeEndFlatpickr.set({
-        minDate: moment(timeStartInput.value, `YYYY-MM-DD HH:mm`).format(`x`)
+        minDate: timeStartInput.value
       });
     });
 
     timeEndInput.addEventListener(`change`, () => {
       this._timeStartFlatpickr.set({
-        maxDate: moment(timeEndInput.value, `YYYY-MM-DD HH:mm`).format(`x`)
+        maxDate: timeEndInput.value
       });
     });
   }
@@ -321,7 +321,7 @@ export class PointEdit extends Component {
     this._description = data.description;
     this._date = data.date;
     this._dateEnd = data.dateEnd;
-    this._icon = this._travelWay.find((element) => element.name === this._type).icon;
+    this._icon = this._travelWay.find((element) => element.name === this._type) ? this._travelWay.find((element) => element.name === this._type).icon : ``;
     this._isFavorite = data.isFavorite;
   }
 
