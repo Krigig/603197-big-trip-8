@@ -6,13 +6,13 @@ export class ModelPoint {
   constructor(data) {
     this.id = data[`id`];
     this.type = data[`type`] || ``;
-    this.icon = dictionary.travelWay.find((element) => element.name === data[`type`]).icon;
+    this.icon = this.type !== `` ? dictionary.travelWay.find((element) => element.name === data[`type`]).icon : ``;
     this.destination = data.destination.name;
-    this.picture = data.destination[`pictures`] || ``;
-    this.description = data.destination.description;
-    this.price = data[`base_price`];
-    this.date = data[`date_from`];
-    this.dateEnd = data[`date_to`];
+    this.picture = data.destination[`pictures`] || [];
+    this.description = data.destination.description || ``;
+    this.price = data[`base_price`] || ``;
+    this.date = +data[`date_from`] || ``;
+    this.dateEnd = +data[`date_to`] || ``;
     this.timeStart = moment(data[`date_from`], `x`).format(`HH:mm`);
     this.timeEnd = moment(data[`date_to`], `x`).format(`HH:mm`);
     this.tripDuration = getDiffTime(data[`date_from`], data[`date_to`]);
@@ -22,6 +22,7 @@ export class ModelPoint {
       'title': it.title,
       'price': it.price
     }));
+    this.isFavorite = data[`is_favorite`];
   }
 
   toRAW() {
@@ -34,9 +35,10 @@ export class ModelPoint {
         'description': this.description,
       },
       'base_price': this.price,
-      'date_from': moment(this.dateValue + ` ` + this.timeStart, `DD HH:mm`).format(`x`),
-      'date_to': moment(this.dateEndValue + ` ` + this.timeEnd, `DD, HH:mm`).format(`x`),
-      'offers': this.offers
+      'date_from': moment(this.date, `YYYY-MM-DD HH:mm`).format(`x`),
+      'date_to': moment(this.dateEnd, `YYYY-MM-DD HH:mm`).format(`x`),
+      'offers': this.offers,
+      'is_favorite': this.isFavorite
     };
   }
 
