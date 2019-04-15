@@ -1,25 +1,26 @@
-import {Filter} from './filter-class.js';
+import {Sorting} from './sorting.js';
+import {getTotalPrice} from './utils.js';
 
 const filterPoints = (points, filterName) => {
   switch (filterName) {
-    case `everything`:
+    case `Event`:
       return points;
 
-    case `future`:
-      return points.filter((it) => it.date > Date.now());
+    case `Time`:
+      return points.concat().sort((a, b) => a.tripDuration - b.tripDuration);
 
-    case `past`:
-      return points.filter((it) => it.date < Date.now());
+    case `Price`:
+      return points.concat().sort((a, b) => getTotalPrice(a) - getTotalPrice(b));
   }
   return points;
 };
 
-const renderFilters = (data, container, callback, filteredArray) => {
+const renderSorting = (data, container, callback, filteredArray) => {
   container.innerHTML = ``;
 
   for (let i = 0; i < data.length; i++) {
     const filter = data[i];
-    const filterComponent = new Filter(filter);
+    const filterComponent = new Sorting(filter);
 
     filterComponent.onFilter = () => {
       const filterName = filter.name;
@@ -32,4 +33,4 @@ const renderFilters = (data, container, callback, filteredArray) => {
 
 };
 
-export {renderFilters};
+export {renderSorting};

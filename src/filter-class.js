@@ -10,6 +10,10 @@ export class Filter extends Component {
     this._onFilterButtonClick = this._onFilterButtonClick.bind(this);
   }
 
+  set onFilter(fn) {
+    this._onFilter = fn;
+  }
+
   get template() {
     return `
         <span>
@@ -20,10 +24,6 @@ export class Filter extends Component {
 
   _onFilterButtonClick() {
     return typeof this._onFilter === `function` && this._onFilter();
-  }
-
-  set onFilter(fn) {
-    this._onFilter = fn;
   }
 
   bind() {
