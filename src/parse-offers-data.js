@@ -1,22 +1,27 @@
 
-export class ModelOffer {
+export default class ModelOffer {
   constructor(data) {
-    this.id = data[`name`].split(` `).join(`-`);
-    this.accepted = false;
-    this.title = data.name;
-    this.price = data.price;
+    this.type = data.type;
+    this.offers = data.offers.map((it) => ({
+      id: it[`name`].split(` `).join(`-`),
+      accepted: false,
+      title: it.name,
+      price: it.price,
+    }));
   }
 
   toRAW() {
     return {
-      'accepted': this.accepted,
-      'name': this.title,
-      'price': this.price
+      'type': this.type,
+      'offers': this.offers.map((it) => ({
+        name: it.title,
+        price: it.price
+      }))
     };
   }
 
   static parseOffer(data) {
-    return {type: data.type, offers: data.offers.map((it) => new ModelOffer(it))};
+    return new ModelOffer(data);
   }
 
   static parseOffers(data) {

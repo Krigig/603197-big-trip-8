@@ -1,4 +1,6 @@
-import {Filter} from './filter-class.js';
+import Filter from './filter-class.js';
+import {renderSorting} from './get-sorting.js';
+import {sorting} from './filter-data.js';
 
 const filterPoints = (points, filterName) => {
   switch (filterName) {
@@ -15,16 +17,23 @@ const filterPoints = (points, filterName) => {
 };
 
 const renderFilters = (data, container, callback, filteredArray) => {
+  const sortingContainer = document.querySelector(`.trip-sorting`);
   container.innerHTML = ``;
 
-  for (let i = 0; i < data.length; i++) {
-    const filter = data[i];
-    const filterComponent = new Filter(filter);
+  const filterNameNow = data.find((it) => it.isChecked === true).name;
+  let fiteredPoints = filterPoints(filteredArray, filterNameNow);
+  renderSorting(sorting, sortingContainer, callback, fiteredPoints);
 
+  for (const filter of data) {
+    const filterComponent = new Filter(filter);
     filterComponent.onFilter = () => {
+      data.map((it) => {
+        it.isChecked = false;
+      });
+      filter.isChecked = true;
       const filterName = filter.name;
-      const filteredPoints = filterPoints(filteredArray, filterName);
-      callback(filteredPoints);
+      fiteredPoints = filterPoints(filteredArray, filterName);
+      renderSorting(sorting, sortingContainer, callback, fiteredPoints);
     };
 
     container.appendChild(filterComponent.render());

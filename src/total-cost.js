@@ -1,4 +1,4 @@
-import {Component} from './component.js';
+import Component from './component.js';
 import {getTotalCost} from './utils.js';
 
 class TotalCost extends Component {

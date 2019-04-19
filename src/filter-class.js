@@ -1,6 +1,6 @@
-import {Component} from './component.js';
+import Component from './component.js';
 
-export class Filter extends Component {
+export default class Filter extends Component {
   constructor(filter) {
     super();
 

@@ -2,7 +2,7 @@ import moment from 'moment';
 import {dictionary} from './dictionary.js';
 import {getDiffTime} from './utils.js';
 
-export class ModelPoint {
+export default class ModelPoint {
   constructor(data) {
     this.id = data[`id`];
     this.type = data[`type`] || ``;

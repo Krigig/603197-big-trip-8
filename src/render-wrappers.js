@@ -1,4 +1,4 @@
-import {Wrapper} from './point-wrapper.js';
+import Wrapper from './point-wrapper.js';
 import moment from 'moment';
 
 export const renderWrappers = (data, container) => {

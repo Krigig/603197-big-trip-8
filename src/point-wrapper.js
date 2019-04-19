@@ -1,7 +1,7 @@
-import {Component} from './component.js';
+import Component from './component.js';
 import moment from 'moment';
 
-export class Wrapper extends Component {
+export default class Wrapper extends Component {
   constructor(data) {
     super();
 

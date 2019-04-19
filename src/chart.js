@@ -8,7 +8,7 @@ const BAR_HEIGHT = 55;
 
 const getMoneyChart = (label, dataStatictic) => {
   const moneyCtx = document.querySelector(`.statistic__money`);
-  moneyCtx.height = BAR_HEIGHT * 6;
+  moneyCtx.height = BAR_HEIGHT * 20;
 
   return new Chart(moneyCtx, {
     plugins: [ChartDataLabels],
@@ -79,7 +79,7 @@ const getMoneyChart = (label, dataStatictic) => {
 
 const getTransportChart = (label, dataStatictic) => {
   const transportCtx = document.querySelector(`.statistic__transport`);
-  transportCtx.height = BAR_HEIGHT * 4;
+  transportCtx.height = BAR_HEIGHT * 6;
 
   return new Chart(transportCtx, {
     plugins: [ChartDataLabels],
@@ -150,7 +150,7 @@ const getTransportChart = (label, dataStatictic) => {
 
 const getTimeSpendChart = (label, dataStatictic) => {
   const timeSpendCtx = document.querySelector(`.statistic__time-spend`);
-  timeSpendCtx.height = BAR_HEIGHT * 4;
+  timeSpendCtx.height = BAR_HEIGHT * 6;
 
   return new Chart(timeSpendCtx, {
     plugins: [ChartDataLabels],
@@ -220,11 +220,24 @@ const getTimeSpendChart = (label, dataStatictic) => {
 };
 
 const getChart = (data) => {
+  const statisticContainer = document.querySelector(`.statistic`);
+  statisticContainer.innerHTML = `<div class="statistic__item statistic__item--money">
+  <canvas class="statistic__money" width="900"></canvas>
+</div>
+
+<div class="statistic__item statistic__item--transport">
+  <canvas class="statistic__transport" width="900"></canvas>
+</div>
+
+<div class="statistic__item statistic__item--time-spend">
+  <canvas class="statistic__time-spend" width="900"></canvas>
+</div>`;
+
   const moneyArray = data.map((it) => {
     if (it.offers.length !== 0) {
-      return it.price + it.offers.reduce((acc, item) => acc + +[item.accepted ? item.price : 0], 0);
+      return +it.price + it.offers.reduce((acc, item) => acc + +[item.accepted ? item.price : 0], 0);
     } else {
-      return it.price;
+      return +it.price;
     }
   });
 

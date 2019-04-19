@@ -1,16 +1,14 @@
-import {filters, sorting} from './filter-data.js';
-import {API} from './api.js';
+import API from './api.js';
+import Point from './point.js';
+import PointEdit from './point-edit.js';
+import ModelPoint from './parse-data.js';
+
+import {filters} from './filter-data.js';
 import {dictionary} from './dictionary';
-
 import {renderFilters} from './get-filter.js';
-import {renderSorting} from './get-sorting.js';
-
 import {getChart} from './chart.js';
+import {renderWrappers} from './render-wrappers.js';
 
-import {Point} from './point.js';
-import {PointEdit} from './point-edit.js';
-import {renderWrappers} from './renderWrappers.js';
-import {ModelPoint} from './parseData.js';
 import {isEscEvent} from './utils.js';
 import {renderTotalCost} from './total-cost.js';
 import moment from 'moment';
@@ -27,8 +25,8 @@ document.querySelectorAll(`.view-switch__item`).forEach((switcher) => switcher.a
 // получение пунтков с сервера + их отрисовка
 const AUTHORIZATION = `Basic dXNlckBwYXNzd29yZAo=${Math.random()}`;
 const END_POINT = `https://es8-demo-srv.appspot.com/big-trip`;
-
 const api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
+
 const container = document.querySelector(`.trip-points`);
 
 const getMessageWaite = () => {
@@ -40,8 +38,7 @@ const getMessageError = () => {
 
 const renderPoints = (points) => {
   renderWrappers(points, container);
-  for (let i = 0; i < points.length; i++) {
-    let point = points[i];
+  for (const point of points) {
     let day = `#day-` + moment(point.date).format(`MMDDYYYY`);
     let containerPoints = container.querySelector(day).querySelector(`.trip-day__items`);
 
@@ -83,7 +80,7 @@ const renderPoints = (points) => {
         .then(() => {
           api.getPoints()
             .then((updatePoints) => {
-              renderPoints(updatePoints);
+              renderFilters(filters, filtersContainer, renderPoints, updatePoints);
               getChart(updatePoints);
               renderTotalCost(updatePoints);
             });
@@ -100,6 +97,7 @@ const renderPoints = (points) => {
         .then(() => {
           api.getPoints()
             .then((newData) => {
+              renderPoints(newData);
               getChart(newData);
               renderTotalCost(newData);
             });
@@ -119,35 +117,8 @@ const renderPoints = (points) => {
   }
 };
 
-
 const filtersContainer = document.querySelector(`.trip-filter`);
-const sortingContainer = document.querySelector(`.trip-sorting`);
-
-getMessageWaite();
-api.getOffers()
-  .then((responsiv) => {
-    dictionary.offersList = responsiv;
-  })
-  .then(() => {
-    api.getDestination()
-          .then((responsiv) => {
-            dictionary.destinations = responsiv;
-          });
-  })
-  .then(() => {
-    api.getPoints()
-    .then((points) => {
-      renderFilters(filters, filtersContainer, renderPoints, points);
-
-      renderSorting(sorting, sortingContainer, renderPoints, points);
-
-      renderPoints(points);
-      getChart(points);
-      renderTotalCost(points);
-    })
-    .catch(getMessageError);
-  });
-
+// Создание нового пунка поездки
 document.querySelector(`.new-event`).addEventListener(`click`, function () {
   const newEventData = new ModelPoint({
     'id': ``,
@@ -182,7 +153,7 @@ document.querySelector(`.new-event`).addEventListener(`click`, function () {
     .then(() => {
       api.getPoints()
       .then((points) => {
-        renderPoints(points);
+        renderFilters(filters, filtersContainer, renderPoints, points);
         getChart(points);
         renderTotalCost(points);
       });
@@ -199,3 +170,26 @@ document.querySelector(`.new-event`).addEventListener(`click`, function () {
   };
   container.prepend(newEvent.render());
 });
+
+// Загрузка данных с сервера
+
+getMessageWaite();
+api.getOffers()
+  .then((responsiv) => {
+    dictionary.offersList = responsiv;
+  })
+  .then(() => {
+    api.getDestination()
+          .then((responsiv) => {
+            dictionary.destinations = responsiv;
+          });
+  })
+  .then(() => {
+    api.getPoints()
+    .then((points) => {
+      renderFilters(filters, filtersContainer, renderPoints, points);
+      getChart(points);
+      renderTotalCost(points);
+    })
+    .catch(getMessageError);
+  });

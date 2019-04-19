@@ -1,13 +1,13 @@
-import {Component} from './component.js';
+import Component from './component.js';
 
-export class Sorting extends Component {
+export default class Sorting extends Component {
   constructor(filter) {
     super();
 
     this._filter = filter.name;
     this._isChecked = filter.isChecked;
     this._isSorting = filter.isSorting;
-    this._onFilter = null;
+    this._onSort = null;
     this._onFilterButtonClick = this._onFilterButtonClick.bind(this);
   }
 
@@ -20,11 +20,11 @@ export class Sorting extends Component {
   }
 
   _onFilterButtonClick() {
-    return typeof this._onFilter === `function` && this._onFilter();
+    return typeof this._onSort === `function` && this._onSort();
   }
 
-  set onFilter(fn) {
-    this._onFilter = fn;
+  set onSort(fn) {
+    this._onSort = fn;
   }
 
   bind() {

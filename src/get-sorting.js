@@ -1,34 +1,45 @@
-import {Sorting} from './sorting.js';
+import Sorting from './sorting.js';
 import {getTotalPrice} from './utils.js';
 
-const filterPoints = (points, filterName) => {
+const sortingPoints = (points, filterName) => {
   switch (filterName) {
     case `Event`:
       return points;
 
     case `Time`:
-      return points.concat().sort((a, b) => a.tripDuration - b.tripDuration);
+      return points.concat().sort((a, b) => b.tripDuration - a.tripDuration);
 
     case `Price`:
-      return points.concat().sort((a, b) => getTotalPrice(a) - getTotalPrice(b));
+      return points.concat().sort((a, b) => getTotalPrice(b) - getTotalPrice(a));
   }
   return points;
 };
 
-const renderSorting = (data, container, callback, filteredArray) => {
+const getSorting = (sortedArray, sortingName, callback) => {
+  const sortedPoints = sortingPoints(sortedArray, sortingName);
+  callback(sortedPoints);
+};
+
+const renderSorting = (data, container, callback, sortedArray) => {
   container.innerHTML = ``;
+  const sortingNameNow = data.find((it) => it.isChecked === true).name;
+  getSorting(sortedArray, sortingNameNow, callback);
 
-  for (let i = 0; i < data.length; i++) {
-    const filter = data[i];
-    const filterComponent = new Sorting(filter);
+  for (const sorting of data) {
+    const sortingComponent = new Sorting(sorting);
 
-    filterComponent.onFilter = () => {
-      const filterName = filter.name;
-      const filteredPoints = filterPoints(filteredArray, filterName);
-      callback(filteredPoints);
+    sortingComponent.onSort = () => {
+      if (sorting.isSorting) {
+        data.map((it) => {
+          it.isChecked = false;
+        });
+        sorting.isChecked = true;
+        const sortingName = sorting.name;
+        getSorting(sortedArray, sortingName, callback);
+      }
     };
 
-    container.appendChild(filterComponent.render());
+    container.appendChild(sortingComponent.render());
   }
 
 };

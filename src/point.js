@@ -1,7 +1,7 @@
-import {Component} from './component.js';
+import Component from './component.js';
 import {getDiffTimeParse} from './utils.js';
 
-export class Point extends Component {
+export default class Point extends Component {
   constructor(data, dictionary) {
     super();
     this._id = data.id;

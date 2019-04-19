@@ -1,7 +1,7 @@
-import {Component} from './component.js';
+import Component from './component.js';
 import flatpickr from 'flatpickr';
 
-export class PointEdit extends Component {
+export default class PointEdit extends Component {
   constructor(data, dictionary) {
     super();
     this._id = data.id;
@@ -179,7 +179,7 @@ export class PointEdit extends Component {
 
   _onChangeTypeButtonClick(evt) {
     if (this._offersList.some((it) => it.type === evt.target.value)) {
-      this._offers = this._offersList.find((element) => element.type === evt.target.value).offers.concat();
+      this._offers = this._offersList.find((element) => element.type === evt.target.value).offers;
     } else {
       this._offers = [];
     }
@@ -278,7 +278,7 @@ export class PointEdit extends Component {
     this._dateFlatpickr.setDate(new Date(this._date));
     this._timeStartFlatpickr = flatpickr(timeStartInput, {'enableTime': true, 'altInput': true, 'altFormat': `H:i`, 'dateFormat': `Y-m-d H:i`, 'time_24hr': true, 'maxDate': ``});
     this._timeStartFlatpickr.setDate(new Date(this._date));
-    this._timeEndFlatpickr = flatpickr(timeEndInput, {'enableTime': true, 'altInput': true, 'altFormat': `H:i`, 'dateFormat': `Y-m-d H:i`, 'time_24hr': true, 'minDate': ``});
+    this._timeEndFlatpickr = flatpickr(timeEndInput, {'enableTime': true, 'altInput': true, 'altFormat': `H:i`, 'dateFormat': `Y-m-d H:i`, 'time_24hr': true, 'minDate': timeStartInput.value});
     this._timeEndFlatpickr.setDate(new Date(this._dateEnd));
 
     timeStartInput.addEventListener(`change`, () => {
@@ -289,7 +289,7 @@ export class PointEdit extends Component {
 
     timeEndInput.addEventListener(`change`, () => {
       this._timeStartFlatpickr.set({
-        maxDate: timeEndInput.value
+        maxDate: timeEndInput.value,
       });
     });
   }

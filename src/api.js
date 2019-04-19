@@ -1,5 +1,5 @@
-import {ModelPoint} from './parseData.js';
-import {ModelOffer} from './parse-offers-data';
+import ModelPoint from './parse-data.js';
+import ModelOffer from './parse-offers-data';
 
 const Method = {
   GET: `GET`,
@@ -21,7 +21,7 @@ const toJSON = (response) => {
 };
 
 
-export class API {
+export default class API {
   constructor({endPoint, authorization}) {
     this._endPoint = endPoint;
     this._authorization = authorization;
@@ -68,6 +68,16 @@ export class API {
 
   deletePoint(id) {
     return this._load({url: `points/${id}`, method: Method.DELETE});
+  }
+
+  syncTasks({data}) {
+    return this._load({
+      url: `points/sync`,
+      method: `POST`,
+      body: JSON.stringify(data),
+      headers: new Headers({'Content-Type': `application/json`})
+    })
+      .then(toJSON);
   }
 
   _load({url, method = Method.GET, body = null, headers = new Headers()}) {
