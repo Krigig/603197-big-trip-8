@@ -179,7 +179,12 @@ export default class PointEdit extends Component {
 
   _onChangeTypeButtonClick(evt) {
     if (this._offersList.some((it) => it.type === evt.target.value)) {
-      this._offers = this._offersList.find((element) => element.type === evt.target.value).offers;
+      this._offers = Object.assign({}, this._offersList.find((element) => element.type === evt.target.value)).offers.map((it) => ({
+        id: it[`name`].split(` `).join(`-`),
+        accepted: false,
+        title: it.name,
+        price: it.price,
+      }));
     } else {
       this._offers = [];
     }

@@ -1,5 +1,4 @@
 import ModelPoint from './parse-data.js';
-import ModelOffer from './parse-offers-data';
 
 const Method = {
   GET: `GET`,
@@ -34,8 +33,7 @@ export default class API {
 
   getOffers() {
     return this._load({url: `offers`})
-      .then(toJSON)
-      .then(ModelOffer.parseOffers);
+      .then(toJSON);
   }
 
   getPoints() {
